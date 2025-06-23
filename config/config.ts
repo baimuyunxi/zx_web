@@ -76,7 +76,7 @@ export default defineConfig({
    * @name layout 插件
    * @doc https://umijs.org/docs/max/layout-menu
    */
-  title: 'Ant Design Pro',
+  title: '指标监控平台',
   layout: {
     locale: true,
     ...defaultSettings,
@@ -153,4 +153,5 @@ export default defineConfig({
   },
   esbuildMinifyIIFE: true,
   requestRecord: {},
+  history: { type: 'hash' },
 });
