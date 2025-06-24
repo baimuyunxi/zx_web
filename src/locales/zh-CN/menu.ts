@@ -1,5 +1,9 @@
 export default {
   'menu.welcome': '欢迎',
+  'menu.HumanService': '人工服务',
+  'menu.SmartServices': '智能服务',
+  'menu.OrderProcess': '工单处理',
+  'menu.CustomerTestimonials': '客户评价',
   'menu.more-blocks': '更多区块',
   'menu.home': '首页',
   'menu.admin': '管理页',

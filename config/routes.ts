@@ -23,6 +23,30 @@ export default [
   //   ],
   // },
   {
+    path: '/human',
+    name: 'HumanService',
+    icon: 'TeamOutlined',
+    component: './HumanServices',
+  },
+  {
+    path: '/smart',
+    name: 'SmartServices',
+    icon: 'RobotOutlined',
+    component: './SmartServices',
+  },
+  {
+    path: '/order',
+    name: 'OrderProcess',
+    icon: 'ReconciliationOutlined',
+    component: './OrderProcess',
+  },
+  {
+    path: '/testimonials',
+    name: 'CustomerTestimonials',
+    icon: 'MessageOutlined',
+    component: './CustomerTestimonials',
+  },
+  {
     path: '/welcome',
     name: 'welcome',
     icon: 'smile',
@@ -53,7 +77,7 @@ export default [
   },
   {
     path: '/',
-    redirect: '/welcome',
+    redirect: '/human',
   },
   {
     path: '*',
