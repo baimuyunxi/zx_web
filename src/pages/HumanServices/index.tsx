@@ -17,9 +17,21 @@ const topColProps = {
   },
 };
 
-const formatter: StatisticProps['formatter'] = (value) => (
-  <CountUp end={value as number} separator={','} />
-);
+const formatter: StatisticProps['formatter'] = (value) => {
+  const numValue = value as number;
+
+  // 获取原始数值的小数位数
+  const decimalPlaces = (numValue.toString().split('.')[1] || '').length;
+
+  return (
+    <CountUp
+      end={numValue}
+      separator={','}
+      decimals={decimalPlaces} // 保持原有的小数位数
+      decimal="."
+    />
+  );
+};
 
 const HumanServices = () => {
   const { styles } = useStyles();
