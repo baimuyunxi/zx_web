@@ -3,7 +3,7 @@ import type { StatisticProps } from 'antd';
 import { Statistic, Tag } from 'antd';
 import CountUp from 'react-countup';
 import useStyles from '@/pages/components/StatisticDisplay/index.style';
-import { ArrowDownOutlined, ArrowUpOutlined, MinusOutlined } from '@ant-design/icons';
+import { FrownOutlined, SmileOutlined } from '@ant-design/icons';
 
 // 内置formatter定义
 const formatter: StatisticProps['formatter'] = (value) => {
@@ -54,35 +54,24 @@ const StatisticDisplay: React.FC<StatisticDisplayProps> = ({
     if (!thresholdType) return null;
 
     switch (thresholdType) {
-      case 'up':
-        return (
-          <ArrowUpOutlined
-            style={{
-              color: '#52c41a',
-              fontSize: '18px',
-            }}
-          />
-        );
       case 'down':
         return (
-          <ArrowDownOutlined
+          <FrownOutlined
             style={{
               color: '#ff4d4f',
               fontSize: '18px',
             }}
           />
         );
-      case 'flat':
+      default:
         return (
-          <MinusOutlined
+          <SmileOutlined
             style={{
-              color: '#8c8c8c',
+              color: '#52c41a',
               fontSize: '18px',
             }}
           />
         );
-      default:
-        return null;
     }
   };
 
