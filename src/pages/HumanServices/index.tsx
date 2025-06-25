@@ -7,6 +7,7 @@ import useStyles from '@/pages/HumanServices/style.style';
 import CountUp from 'react-countup';
 import StatisticDisplay from '@/pages/components/StatisticDisplay';
 import { InfoCircleOutlined } from '@ant-design/icons';
+import { createChartRenderer, useChartModal } from '@/pages/HumanServices/utils/useChartModal';
 
 const topColProps = {
   xs: 24,
@@ -37,6 +38,14 @@ const formatter: StatisticProps['formatter'] = (value) => {
 
 const HumanServices = () => {
   const { styles } = useStyles();
+
+  const { modalStates, showModal, handleModalClose, handlePeriodChange } = useChartModal();
+  const renderChartWithModal = createChartRenderer(
+    modalStates,
+    showModal,
+    handleModalClose,
+    handlePeriodChange,
+  );
 
   return (
     <PageContainer>
@@ -74,11 +83,12 @@ const HumanServices = () => {
             footer={
               <>
                 <Trend value="12%">日环比</Trend>
-
                 <Trend value="-8%">月环比</Trend>
               </>
             }
-          />
+          >
+            {renderChartWithModal('total_volume', '万号人工话务总量')}
+          </ChartCard>
         </Col>
         <Col {...topColProps}>
           <ChartCard
@@ -103,11 +113,12 @@ const HumanServices = () => {
             footer={
               <>
                 <Trend value="12%">日环比</Trend>
-
                 <Trend value="-8%">月环比</Trend>
               </>
             }
-          />
+          >
+            {renderChartWithModal('voice_calls', '语音人工呼入量')}
+          </ChartCard>
         </Col>
         <Col {...topColProps}>
           <ChartCard
@@ -132,11 +143,12 @@ const HumanServices = () => {
             footer={
               <>
                 <Trend value="12%">日环比</Trend>
-
                 <Trend value="-8%">月环比</Trend>
               </>
             }
-          />
+          >
+            {renderChartWithModal('text_service', '文字客服呼入量')}
+          </ChartCard>
         </Col>
         <Col {...topColProps}>
           <ChartCard
@@ -161,11 +173,12 @@ const HumanServices = () => {
             footer={
               <>
                 <Trend value="12%">日环比</Trend>
-
                 <Trend value="-8%">月环比</Trend>
               </>
             }
-          />
+          >
+            {renderChartWithModal('remote_counter', '远程柜台呼入量')}
+          </ChartCard>
         </Col>
       </Row>
 
@@ -188,7 +201,9 @@ const HumanServices = () => {
               </Tooltip>
             }
             total={<StatisticDisplay value={85.2} suffix="%" threshold="up" />}
-          />
+          >
+            {renderChartWithModal('voice_15s_rate', '语音客服15秒接通率')}
+          </ChartCard>
         </Col>
         <Col {...topColProps}>
           <ChartCard
@@ -208,7 +223,9 @@ const HumanServices = () => {
               </Tooltip>
             }
             total={<StatisticDisplay value={92} suffix="%" threshold="down" />}
-          />
+          >
+            {renderChartWithModal('text_5min_rate', '文字客服5分钟接通率')}
+          </ChartCard>
         </Col>
         <Col {...topColProps}>
           <ChartCard
@@ -228,7 +245,9 @@ const HumanServices = () => {
               </Tooltip>
             }
             total={<StatisticDisplay value={78} suffix="%" threshold="flat" />}
-          />
+          >
+            {renderChartWithModal('remote_25s_rate', '远程柜台25秒接通率')}
+          </ChartCard>
         </Col>
         <Col {...topColProps}>
           <ChartCard
@@ -248,7 +267,9 @@ const HumanServices = () => {
               </Tooltip>
             }
             total={<StatisticDisplay value={88} suffix="%" threshold="up" />}
-          />
+          >
+            {renderChartWithModal('10009_15s_rate', '10009号15秒接通率')}
+          </ChartCard>
         </Col>
       </Row>
 
@@ -271,7 +292,9 @@ const HumanServices = () => {
               </Tooltip>
             }
             total={<StatisticDisplay value={95} suffix="%" threshold="up" />}
-          />
+          >
+            {renderChartWithModal('senior_rate', '10000号适老化接通率')}
+          </ChartCard>
         </Col>
         <Col {...topColProps}>
           <ChartCard
@@ -291,7 +314,9 @@ const HumanServices = () => {
               </Tooltip>
             }
             total={<StatisticDisplay value={83} suffix="%" threshold="up" />}
-          />
+          >
+            {renderChartWithModal('first_solution_rate', '10000号人工一解率')}
+          </ChartCard>
         </Col>
         <Col {...topColProps}>
           <ChartCard
@@ -311,7 +336,9 @@ const HumanServices = () => {
               </Tooltip>
             }
             total={<StatisticDisplay value={12} suffix="%" threshold="up" />}
-          />
+          >
+            {renderChartWithModal('repeat_call_rate', '10000号重复来电率')}
+          </ChartCard>
         </Col>
       </Row>
 
@@ -349,7 +376,9 @@ const HumanServices = () => {
                 <Trend value="-8%">月环比</Trend>
               </>
             }
-          />
+          >
+            {renderChartWithModal('monthly_calls_per_person', '语音人均月接话量')}
+          </ChartCard>
         </Col>
         <Col {...topColProps}>
           <ChartCard
@@ -374,7 +403,9 @@ const HumanServices = () => {
                 <Trend value="-8%">月环比</Trend>
               </>
             }
-          />
+          >
+            {renderChartWithModal('call_intensity', '语音通话强度')}
+          </ChartCard>
         </Col>
         <Col {...topColProps}>
           <ChartCard
@@ -399,7 +430,9 @@ const HumanServices = () => {
                 <Trend value="-8%">月环比</Trend>
               </>
             }
-          />
+          >
+            {renderChartWithModal('night_decline', '夜间语音人工接话量降幅')}
+          </ChartCard>
         </Col>
         <Col {...topColProps}>
           <ChartCard
@@ -419,7 +452,9 @@ const HumanServices = () => {
               </Tooltip>
             }
             total={<StatisticDisplay value={91} suffix="%" threshold="up" />}
-          />
+          >
+            {renderChartWithModal('call_utilization', '语音通话利用率')}
+          </ChartCard>
         </Col>
       </Row>
     </PageContainer>
