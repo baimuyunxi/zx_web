@@ -2,6 +2,10 @@ import { createStyles } from 'antd-style';
 
 const useStyles = createStyles(({ token }) => {
   return {
+    titleSpan: {
+      fontSize: 16,
+      color: '#8c8c8c',
+    },
     iconGroup: {
       'span.anticon': {
         marginLeft: '16px',
