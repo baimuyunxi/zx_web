@@ -1,5 +1,5 @@
 import React from 'react';
-import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
+import { FallOutlined, RiseOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
 import useStyles from './index.style';
 
@@ -124,7 +124,7 @@ const Trend: React.FC<TrendProps> = ({
             marginRight: '12px',
           }}
         >
-          {direction === 'up' ? <CaretUpOutlined /> : <CaretDownOutlined />}
+          {direction === 'up' ? <RiseOutlined /> : <FallOutlined />}
         </span>
       )}
     </div>

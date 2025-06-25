@@ -3,6 +3,7 @@ import type { StatisticProps } from 'antd';
 import { Statistic, Tag } from 'antd';
 import CountUp from 'react-countup';
 import useStyles from '@/pages/components/StatisticDisplay/index.style';
+import { ArrowDownOutlined, ArrowUpOutlined, MinusOutlined } from '@ant-design/icons';
 
 // 内置formatter定义
 const formatter: StatisticProps['formatter'] = (value) => {
@@ -32,6 +33,8 @@ export type StatisticDisplayProps = {
   monthValue?: string | number;
   /** 设置数值的后缀，可选 */
   suffix?: React.ReactNode;
+  /** 阈值提醒，可选 */
+  threshold?: string;
 };
 
 const StatisticDisplay: React.FC<StatisticDisplayProps> = ({
@@ -40,13 +43,62 @@ const StatisticDisplay: React.FC<StatisticDisplayProps> = ({
   monthLabel,
   monthValue,
   suffix,
+  threshold,
 }) => {
   const { styles } = useStyles();
   // 判断是否显示月累计标签
   const showMonthTag = monthLabel && monthValue !== undefined && monthValue !== null;
 
+  // 根据threshold获取图标和颜色
+  const getThresholdIcon = (thresholdType: string) => {
+    if (!thresholdType) return null;
+
+    switch (thresholdType) {
+      case 'up':
+        return (
+          <ArrowUpOutlined
+            style={{
+              color: '#52c41a',
+              fontSize: '18px',
+            }}
+          />
+        );
+      case 'down':
+        return (
+          <ArrowDownOutlined
+            style={{
+              color: '#ff4d4f',
+              fontSize: '18px',
+            }}
+          />
+        );
+      case 'flat':
+        return (
+          <MinusOutlined
+            style={{
+              color: '#8c8c8c',
+              fontSize: '18px',
+            }}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className={styles.totalOuter}>
+      {threshold && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: '4px',
+          }}
+        >
+          {getThresholdIcon(threshold)}
+        </div>
+      )}
       <div className={styles.totalMiddle}>
         {suffix ? (
           <Statistic
