@@ -228,6 +228,12 @@ const HumanServices = () => {
               </Tooltip>
             }
             total={<StatisticDisplay value={85.2} suffix="%" threshold="up" />}
+            footer={
+              <>
+                <Trend value="12PP">日环比</Trend>
+                <Trend value="-8PP">月环比</Trend>
+              </>
+            }
           >
             {renderChartWithModal01('voice_15s_rate', '语音客服15秒接通率')}
           </ChartCard>
@@ -250,6 +256,12 @@ const HumanServices = () => {
               </Tooltip>
             }
             total={<StatisticDisplay value={92} suffix="%" threshold="down" />}
+            footer={
+              <>
+                <Trend value="12PP">日环比</Trend>
+                <Trend value="-8PP">月环比</Trend>
+              </>
+            }
           >
             {renderChartWithModal01('text_5min_rate', '文字客服5分钟接通率')}
           </ChartCard>
@@ -272,6 +284,12 @@ const HumanServices = () => {
               </Tooltip>
             }
             total={<StatisticDisplay value={78} suffix="%" threshold="flat" />}
+            footer={
+              <>
+                <Trend value="12PP">日环比</Trend>
+                <Trend value="-8PP">月环比</Trend>
+              </>
+            }
           >
             {renderChartWithModal01('remote_25s_rate', '远程柜台25秒接通率')}
           </ChartCard>
@@ -294,6 +312,12 @@ const HumanServices = () => {
               </Tooltip>
             }
             total={<StatisticDisplay value={88} suffix="%" threshold="up" />}
+            footer={
+              <>
+                <Trend value="12PP">日环比</Trend>
+                <Trend value="-8PP">月环比</Trend>
+              </>
+            }
           >
             {renderChartWithModal01('10009_15s_rate', '10009号15秒接通率')}
           </ChartCard>
@@ -319,6 +343,12 @@ const HumanServices = () => {
               </Tooltip>
             }
             total={<StatisticDisplay value={95} suffix="%" threshold="up" />}
+            footer={
+              <>
+                <Trend value="12PP">日环比</Trend>
+                <Trend value="-8PP">月环比</Trend>
+              </>
+            }
           >
             {renderChartWithModal01('senior_rate', '10000号适老化接通率')}
           </ChartCard>
@@ -341,6 +371,12 @@ const HumanServices = () => {
               </Tooltip>
             }
             total={<StatisticDisplay value={83} suffix="%" threshold="up" />}
+            footer={
+              <>
+                <Trend value="12PP">日环比</Trend>
+                <Trend value="-8PP">月环比</Trend>
+              </>
+            }
           >
             {renderChartWithModal01('first_solution_rate', '10000号人工一解率')}
           </ChartCard>
@@ -363,6 +399,12 @@ const HumanServices = () => {
               </Tooltip>
             }
             total={<StatisticDisplay value={12} suffix="%" threshold="up" />}
+            footer={
+              <>
+                <Trend value="12PP">日环比</Trend>
+                <Trend value="-8PP">月环比</Trend>
+              </>
+            }
           >
             {renderChartWithModal01('repeat_call_rate', '10000号重复来电率')}
           </ChartCard>
@@ -479,6 +521,11 @@ const HumanServices = () => {
               </Tooltip>
             }
             total={<StatisticDisplay value={91} suffix="%" threshold="up" />}
+            footer={
+              <>
+                <Trend value="-8PP">月环比</Trend>
+              </>
+            }
           >
             {renderChartWithModal02('call_utilization', '语音通话利用率')}
           </ChartCard>
