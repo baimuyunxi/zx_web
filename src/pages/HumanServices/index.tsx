@@ -426,7 +426,7 @@ const HumanServices = () => {
               <>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <Tag color="orange" bordered={false} style={{ fontSize: 12, margin: 0 }}>
-                    6月24日
+                    6月
                   </Tag>
                   <span className={styles.titleSpan}>语音人均月接话量</span>
                 </div>
@@ -453,7 +453,7 @@ const HumanServices = () => {
               <>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <Tag color="orange" bordered={false} style={{ fontSize: 12, margin: 0 }}>
-                    6月24日
+                    6月
                   </Tag>
                   <span className={styles.titleSpan}>语音通话强度</span>
                 </div>
@@ -480,7 +480,7 @@ const HumanServices = () => {
               <>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <Tag color="orange" bordered={false} style={{ fontSize: 12, margin: 0 }}>
-                    6月24日
+                    6月
                   </Tag>
                   <span className={styles.titleSpan}>夜间语音人工接话量降幅</span>
                 </div>
@@ -507,7 +507,7 @@ const HumanServices = () => {
               <>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <Tag color="orange" bordered={false} style={{ fontSize: 12, margin: 0 }}>
-                    6月24日
+                    6月
                   </Tag>
                   <span className={styles.titleSpan}>语音通话利用率</span>
                 </div>
