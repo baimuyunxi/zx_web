@@ -5,7 +5,6 @@ interface ServiceVolumeChartProps {
   isMini?: boolean;
   height?: number;
   title?: string;
-  period?: '7days' | '30days';
 }
 
 const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
@@ -22,19 +21,19 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
     // 初始化图表
     chartInstance.current = echarts.init(chartRef.current);
 
-    // 根据周期生成不同的模拟数据
+    // 月指标固定数据（模拟7个月的数据）
     const getData = () => {
-      // 生成-20%到30%之间的随机日环比数据
+      // 生成-20%到30%之间的随机月环比数据
       const generateRandomRatio = () => {
         return Math.random() * 50 - 20; // -20% 到 30% 之间
       };
 
       const volumeData = [8200, 9320, 9010, 9340, 12900, 13300, 13200];
-      const categories = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+      const categories = ['1月', '2月', '3月', '4月', '5月', '6月', '7月'];
 
-      // 生成随机日环比数据（-20%到30%之间）
+      // 生成随机月环比数据（-20%到30%之间）
       const ratioData = categories.map((_, index) => {
-        if (index === 0) return 0; // 第一天没有环比
+        if (index === 0) return 0; // 第一个月没有环比
         return Number(generateRandomRatio().toFixed(2));
       });
 
@@ -79,7 +78,7 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
             let result = `${params[0].axisValue}<br/>`;
             params.forEach((param: any) => {
               if (param.seriesName === title) {
-                result += `${param.marker}${param.seriesName}: ${param.value.toLocaleString()}次<br/>`;
+                result += `${param.marker}${param.seriesName}: ${param.value.toLocaleString()}<br/>`;
               } else {
                 result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}%<br/>`;
               }
@@ -88,7 +87,7 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
           },
         },
         legend: {
-          data: [title, '环比增长率'],
+          data: [title, '月环比增长率'],
           top: 5,
         },
       }),
@@ -98,7 +97,7 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
         data: categories,
         axisLabel: {
           show: !isMini,
-          rotate: !isMini ? 45 : 0,
+          rotate: !isMini ? 0 : 0, // 月份标签不需要旋转
         },
         axisLine: {
           show: !isMini,
@@ -108,14 +107,23 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
         },
       },
       yAxis: [
-        // 左侧Y轴 - 服务量
+        // 左侧Y轴 - 服务量/数值
         {
           type: 'value',
-          name: isMini ? '' : '服务量',
+          name: isMini ? '' : '数值',
           position: 'left',
           axisLabel: {
             show: !isMini,
-            formatter: '{value}次',
+            formatter: function (value: number) {
+              // 根据指标类型决定单位
+              if (title.includes('率')) {
+                return `${value}%`;
+              } else if (title.includes('量') || title.includes('强度')) {
+                return `${value}`;
+              } else {
+                return `${value}`;
+              }
+            },
           },
           axisLine: {
             show: !isMini,
@@ -130,10 +138,10 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
             show: !isMini,
           },
         },
-        // 右侧Y轴 - 环比增长率
+        // 右侧Y轴 - 月环比增长率
         {
           type: 'value',
-          name: isMini ? '' : '环比增长率',
+          name: isMini ? '' : '月环比增长率',
           position: 'right',
           axisLabel: {
             show: !isMini,
@@ -154,22 +162,22 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
         },
       ],
       series: [
-        // 服务量数据系列
+        // 主数据系列
         {
           name: title,
           data: volumeData,
           type: 'line',
           yAxisIndex: 0, // 使用左侧y轴
-          smooth: true,
+          smooth: isMini ? true : false,
           areaStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
               {
                 offset: 0,
-                color: 'rgba(194,162,240, 0.3)',
+                color: 'rgba(194,162,240)',
               },
               {
                 offset: 1,
-                color: 'rgba(240,230,252, 0.05)',
+                color: 'rgba(240,230,252, 0.3)',
               },
             ]),
           },
@@ -181,42 +189,40 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
             color: 'rgb(103,70,150)',
           },
           symbol: isMini ? 'none' : 'circle',
-          symbolSize: isMini ? 0 : 4,
+          symbolSize: isMini ? 0 : 8,
         },
-        // 环比增长率数据系列
+        // 月环比增长率数据系列
         {
-          name: '环比增长率',
+          name: '月环比增长率',
           data: ratioData,
           type: 'line',
           yAxisIndex: 1, // 使用右侧y轴
-          smooth: true,
+          smooth: isMini ? true : false,
           lineStyle: {
             color: '#FF7D29',
             width: isMini ? 1 : 2,
             type: 'dashed', // 虚线样式以区分
           },
           itemStyle: {
-            color: '#ff4d4f',
+            color: '#ec0507',
           },
           symbol: isMini ? 'none' : 'diamond',
-          symbolSize: isMini ? 0 : 4,
+          symbolSize: isMini ? 0 : 8,
           // 添加标记线显示0%基准线
-          markLine: !isMini
-            ? {
-                silent: true,
-                data: [
-                  {
-                    yAxis: 0,
-                    lineStyle: {
-                      color: '#ff7875',
-                      type: 'solid',
-                      width: 1,
-                      opacity: 0.3,
-                    },
-                  },
-                ],
-              }
-            : undefined,
+          markLine: {
+            silent: true,
+            data: [
+              {
+                yAxis: 0,
+                lineStyle: {
+                  color: '#ff7875',
+                  type: 'solid',
+                  width: 1,
+                  opacity: 0.3,
+                },
+              },
+            ],
+          },
         },
       ],
       animation: true,

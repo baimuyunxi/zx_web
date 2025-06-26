@@ -20,7 +20,7 @@ export interface ChartConfig {
 
 /**
  * 图表模态框状态管理 Hook
- * 职责：专注于状态管理，不涉及UI渲染
+ * 专注于日指标的状态管理，支持周期切换
  */
 export const useChartModal01 = () => {
   const [modalStates, setModalStates] = useState<ModalStates>({});
@@ -70,29 +70,6 @@ export const useChartModal01 = () => {
     );
   };
 
-  // 批量获取多个状态
-  const getMultipleModalStates = (keys: string[]): ModalStates => {
-    const result: ModalStates = {};
-    keys.forEach((key) => {
-      result[key] = getModalState01(key);
-    });
-    return result;
-  };
-
-  // 重置所有状态
-  const resetAllModals = () => {
-    setModalStates({});
-  };
-
-  // 重置指定状态
-  const resetModal = (key: string) => {
-    setModalStates((prev) => {
-      const newStates = { ...prev };
-      delete newStates[key];
-      return newStates;
-    });
-  };
-
   return {
     // 基础状态管理
     showModal01,
@@ -101,20 +78,14 @@ export const useChartModal01 = () => {
 
     // 状态获取
     getModalState01,
-    getMultipleModalStates,
-
-    // 状态重置
-    resetAllModals,
-    resetModal,
 
     // 调试用（保留兼容性）
     modalStates,
   };
 };
 
-// 预定义的图表配置
+// 预定义的日指标图表配置
 export const chartConfigs = {
-  // 日指标配置
   dailyMetrics: [
     { key: 'total_volume', title: '万号人工话务总量' },
     { key: 'voice_calls', title: '语音人工呼入量' },
@@ -132,13 +103,11 @@ export const chartConfigs = {
 
 // 工具函数：从配置中提取所有的 keys
 export const getAllChartKeys = (): string[] => {
-  const dailyKeys = chartConfigs.dailyMetrics.map((config) => config.key);
-  return [...dailyKeys];
+  return chartConfigs.dailyMetrics.map((config) => config.key);
 };
 
 // 工具函数：根据 key 查找标题
 export const getChartTitleByKey = (key: string): string => {
-  const allConfigs = [...chartConfigs.dailyMetrics];
-  const config = allConfigs.find((config) => config.key === key);
+  const config = chartConfigs.dailyMetrics.find((config) => config.key === key);
   return config?.title || key;
 };

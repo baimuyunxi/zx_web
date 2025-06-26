@@ -63,15 +63,13 @@ const HumanServices = () => {
    */
 
   // 状态管理
-  const { showModal02, handleModalClose02, handlePeriodChange02, getModalState02 } =
-    useChartModal02();
+  const { showModal02, handleModalClose02, getModalState02 } = useChartModal02();
 
   // 图表渲染器
   const renderChartWithModal02 = createChartRenderer02(
     getModalState02,
     showModal02,
     handleModalClose02,
-    handlePeriodChange02,
   );
 
   return (

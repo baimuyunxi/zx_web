@@ -4,11 +4,8 @@ import ServiceVolumeChart01 from '@/pages/HumanServices/components/Graph/01/Serv
 import { ChartConfig, ModalState } from './useChartModal01';
 
 /**
- * 图表卡片渲染工具
- * 职责：专注于UI组件渲染，不涉及状态管理
+ * 图表卡片渲染工具 - 日指标专用，支持周期切换
  */
-
-// ==================== 基础组件生成器 ====================
 
 /**
  * 创建迷你图组件
@@ -62,7 +59,7 @@ export const createChartModal = (
       width={800}
       centered
       title={title}
-      destroyOnClose={true} // 关闭时销毁内容，防止状态残留
+      destroyOnClose={true}
     >
       <Radio.Group
         value={period === '7days' ? '01' : '02'}
@@ -79,10 +76,8 @@ export const createChartModal = (
   );
 };
 
-// ==================== 组合渲染器 ====================
-
 /**
- * 创建完整的图表渲染器（结合状态管理）
+ * 创建完整的图表渲染器
  * @param getModalState 获取模态框状态的函数
  * @param showModal 显示模态框的函数
  * @param handleModalClose 关闭模态框的函数
@@ -112,8 +107,6 @@ export const createChartRenderer01 = (
   };
 };
 
-// ==================== 完整组件 ====================
-
 /**
  * 完整的图表组合组件属性
  */
@@ -128,7 +121,6 @@ export interface ChartWithModalProps {
 
 /**
  * 完整的图表组合组件
- * 适用于需要更多自定义控制的场景
  */
 export const ChartWithModal: React.FC<ChartWithModalProps> = ({
   title,
@@ -152,46 +144,25 @@ export const ChartWithModal: React.FC<ChartWithModalProps> = ({
   );
 };
 
-// ==================== 配置常量 ====================
-
 /**
- * 图表配置常量 - 结构化访问
+ * 日指标图表配置常量
  */
-export const CHART_CONFIGS = {
-  DAILY_METRICS: {
-    TOTAL_VOLUME: { key: 'total_volume', title: '万号人工话务总量' },
-    VOICE_CALLS: { key: 'voice_calls', title: '语音人工呼入量' },
-    TEXT_SERVICE: { key: 'text_service', title: '文字客服呼入量' },
-    REMOTE_COUNTER: { key: 'remote_counter', title: '远程柜台呼入量' },
-    VOICE_15S_RATE: { key: 'voice_15s_rate', title: '语音客服15秒接通率' },
-    TEXT_5MIN_RATE: { key: 'text_5min_rate', title: '文字客服5分钟接通率' },
-    REMOTE_25S_RATE: { key: 'remote_25s_rate', title: '远程柜台25秒接通率' },
-    SERVICE_10009_15S_RATE: { key: '10009_15s_rate', title: '10009号15秒接通率' },
-    SENIOR_RATE: { key: 'senior_rate', title: '10000号适老化接通率' },
-    FIRST_SOLUTION_RATE: { key: 'first_solution_rate', title: '10000号人工一解率' },
-    REPEAT_CALL_RATE: { key: 'repeat_call_rate', title: '10000号重复来电率' },
-  },
+export const DAILY_CHART_CONFIGS = {
+  TOTAL_VOLUME: { key: 'total_volume', title: '万号人工话务总量' },
+  VOICE_CALLS: { key: 'voice_calls', title: '语音人工呼入量' },
+  TEXT_SERVICE: { key: 'text_service', title: '文字客服呼入量' },
+  REMOTE_COUNTER: { key: 'remote_counter', title: '远程柜台呼入量' },
+  VOICE_15S_RATE: { key: 'voice_15s_rate', title: '语音客服15秒接通率' },
+  TEXT_5MIN_RATE: { key: 'text_5min_rate', title: '文字客服5分钟接通率' },
+  REMOTE_25S_RATE: { key: 'remote_25s_rate', title: '远程柜台25秒接通率' },
+  SERVICE_10009_15S_RATE: { key: '10009_15s_rate', title: '10009号15秒接通率' },
+  SENIOR_RATE: { key: 'senior_rate', title: '10000号适老化接通率' },
+  FIRST_SOLUTION_RATE: { key: 'first_solution_rate', title: '10000号人工一解率' },
+  REPEAT_CALL_RATE: { key: 'repeat_call_rate', title: '10000号重复来电率' },
 } as const;
-
-// ==================== 批量处理工具 ====================
-
-/**
- * 渲染结果类型
- */
-export interface ChartRenderResult {
-  key: string;
-  title: string;
-  chart: React.ReactNode;
-  modalState: ModalState;
-}
 
 /**
  * 批量渲染图表工具
- * @param configs 图表配置数组
- * @param getModalState 获取状态函数
- * @param showModal 显示模态框函数
- * @param handleModalClose 关闭模态框函数
- * @param handlePeriodChange 切换周期函数
  */
 export const renderChartsInBatch = (
   configs: Array<ChartConfig>,
@@ -199,7 +170,7 @@ export const renderChartsInBatch = (
   showModal: (key: string, title: string) => void,
   handleModalClose: (key: string) => void,
   handlePeriodChange: (key: string, period: '7days' | '30days') => void,
-): ChartRenderResult[] => {
+) => {
   const renderChart = createChartRenderer01(
     getModalState,
     showModal,
@@ -216,41 +187,8 @@ export const renderChartsInBatch = (
 };
 
 /**
- * 快速配置生成器
- * @param configs 基础配置数组
+ * 获取所有日指标配置
  */
-export const generateChartConfig = (configs: Array<ChartConfig>) => {
-  return configs.map((config) => ({
-    ...config,
-    // 为每个配置添加快速渲染方法
-    render: (onShowModal: (key: string, title: string) => void) =>
-      createMiniChart(config.title, () => onShowModal(config.key, config.title)),
-  }));
-};
-
-// ==================== 工具函数 ====================
-
-/**
- * 从 CHART_CONFIGS 中获取所有配置
- */
-export const getAllChartConfigs = (): ChartConfig[] => {
-  const dailyConfigs = Object.values(CHART_CONFIGS.DAILY_METRICS);
-  return [...dailyConfigs];
-};
-
-/**
- * 根据类型获取配置
- * @param type 'daily' | 'monthly'
- */
-export const getChartConfigsByType = (type: 'daily' | 'monthly'): ChartConfig[] => {
-  return Object.values(CHART_CONFIGS.DAILY_METRICS);
-};
-
-/**
- * 根据 key 查找配置
- * @param key 配置键
- */
-export const findChartConfigByKey = (key: string): ChartConfig | undefined => {
-  const allConfigs = getAllChartConfigs();
-  return allConfigs.find((config) => config.key === key);
+export const getAllDailyChartConfigs = (): ChartConfig[] => {
+  return Object.values(DAILY_CHART_CONFIGS);
 };
