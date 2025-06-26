@@ -9,6 +9,8 @@ import StatisticDisplay from '@/pages/components/StatisticDisplay';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useChartModal01 } from '@/pages/HumanServices/components/Graph/01/utils/useChartModal01';
 import { createChartRenderer01 } from '@/pages/HumanServices/components/Graph/01/utils/chartCardUtils01';
+import { useChartModal02 } from '@/pages/HumanServices/components/Graph/02/utils/useChartModal02';
+import { createChartRenderer02 } from '@/pages/HumanServices/components/Graph/02/utils/chartCardUtils02';
 
 const topColProps = {
   xs: 24,
@@ -40,15 +42,36 @@ const formatter: StatisticProps['formatter'] = (value) => {
 const HumanServices = () => {
   const { styles } = useStyles();
 
-  // 状态管理 - 只从 useChartModal01 获取
-  const { showModal, handleModalClose, handlePeriodChange, getModalState } = useChartModal01();
+  /**
+   * 日指标
+   */
 
-  // 图表渲染器 - 从 chartCardUtils 获取
-  const renderChartWithModal = createChartRenderer01(
-    getModalState,
-    showModal,
-    handleModalClose,
-    handlePeriodChange,
+  // 状态管理
+  const { showModal01, handleModalClose01, handlePeriodChange01, getModalState01 } =
+    useChartModal01();
+
+  // 图表渲染器
+  const renderChartWithModal01 = createChartRenderer01(
+    getModalState01,
+    showModal01,
+    handleModalClose01,
+    handlePeriodChange01,
+  );
+
+  /**
+   * 月指标
+   */
+
+  // 状态管理
+  const { showModal02, handleModalClose02, handlePeriodChange02, getModalState02 } =
+    useChartModal02();
+
+  // 图表渲染器
+  const renderChartWithModal02 = createChartRenderer02(
+    getModalState02,
+    showModal02,
+    handleModalClose02,
+    handlePeriodChange02,
   );
 
   return (
@@ -91,7 +114,7 @@ const HumanServices = () => {
               </>
             }
           >
-            {renderChartWithModal('total_volume', '万号人工话务总量')}
+            {renderChartWithModal01('total_volume', '万号人工话务总量')}
           </ChartCard>
         </Col>
         <Col {...topColProps}>
@@ -121,7 +144,7 @@ const HumanServices = () => {
               </>
             }
           >
-            {renderChartWithModal('voice_calls', '语音人工呼入量')}
+            {renderChartWithModal01('voice_calls', '语音人工呼入量')}
           </ChartCard>
         </Col>
         <Col {...topColProps}>
@@ -151,7 +174,7 @@ const HumanServices = () => {
               </>
             }
           >
-            {renderChartWithModal('text_service', '文字客服呼入量')}
+            {renderChartWithModal01('text_service', '文字客服呼入量')}
           </ChartCard>
         </Col>
         <Col {...topColProps}>
@@ -181,7 +204,7 @@ const HumanServices = () => {
               </>
             }
           >
-            {renderChartWithModal('remote_counter', '远程柜台呼入量')}
+            {renderChartWithModal01('remote_counter', '远程柜台呼入量')}
           </ChartCard>
         </Col>
       </Row>
@@ -206,7 +229,7 @@ const HumanServices = () => {
             }
             total={<StatisticDisplay value={85.2} suffix="%" threshold="up" />}
           >
-            {renderChartWithModal('voice_15s_rate', '语音客服15秒接通率')}
+            {renderChartWithModal01('voice_15s_rate', '语音客服15秒接通率')}
           </ChartCard>
         </Col>
         <Col {...topColProps}>
@@ -228,7 +251,7 @@ const HumanServices = () => {
             }
             total={<StatisticDisplay value={92} suffix="%" threshold="down" />}
           >
-            {renderChartWithModal('text_5min_rate', '文字客服5分钟接通率')}
+            {renderChartWithModal01('text_5min_rate', '文字客服5分钟接通率')}
           </ChartCard>
         </Col>
         <Col {...topColProps}>
@@ -250,7 +273,7 @@ const HumanServices = () => {
             }
             total={<StatisticDisplay value={78} suffix="%" threshold="flat" />}
           >
-            {renderChartWithModal('remote_25s_rate', '远程柜台25秒接通率')}
+            {renderChartWithModal01('remote_25s_rate', '远程柜台25秒接通率')}
           </ChartCard>
         </Col>
         <Col {...topColProps}>
@@ -272,7 +295,7 @@ const HumanServices = () => {
             }
             total={<StatisticDisplay value={88} suffix="%" threshold="up" />}
           >
-            {renderChartWithModal('10009_15s_rate', '10009号15秒接通率')}
+            {renderChartWithModal01('10009_15s_rate', '10009号15秒接通率')}
           </ChartCard>
         </Col>
       </Row>
@@ -297,7 +320,7 @@ const HumanServices = () => {
             }
             total={<StatisticDisplay value={95} suffix="%" threshold="up" />}
           >
-            {renderChartWithModal('senior_rate', '10000号适老化接通率')}
+            {renderChartWithModal01('senior_rate', '10000号适老化接通率')}
           </ChartCard>
         </Col>
         <Col {...topColProps}>
@@ -319,7 +342,7 @@ const HumanServices = () => {
             }
             total={<StatisticDisplay value={83} suffix="%" threshold="up" />}
           >
-            {renderChartWithModal('first_solution_rate', '10000号人工一解率')}
+            {renderChartWithModal01('first_solution_rate', '10000号人工一解率')}
           </ChartCard>
         </Col>
         <Col {...topColProps}>
@@ -341,7 +364,7 @@ const HumanServices = () => {
             }
             total={<StatisticDisplay value={12} suffix="%" threshold="up" />}
           >
-            {renderChartWithModal('repeat_call_rate', '10000号重复来电率')}
+            {renderChartWithModal01('repeat_call_rate', '10000号重复来电率')}
           </ChartCard>
         </Col>
       </Row>
@@ -381,7 +404,7 @@ const HumanServices = () => {
               </>
             }
           >
-            {renderChartWithModal('monthly_calls_per_person', '语音人均月接话量')}
+            {renderChartWithModal02('monthly_calls_per_person', '语音人均月接话量')}
           </ChartCard>
         </Col>
         <Col {...topColProps}>
@@ -408,7 +431,7 @@ const HumanServices = () => {
               </>
             }
           >
-            {renderChartWithModal('call_intensity', '语音通话强度')}
+            {renderChartWithModal02('call_intensity', '语音通话强度')}
           </ChartCard>
         </Col>
         <Col {...topColProps}>
@@ -435,7 +458,7 @@ const HumanServices = () => {
               </>
             }
           >
-            {renderChartWithModal('night_decline', '夜间语音人工接话量降幅')}
+            {renderChartWithModal02('night_decline', '夜间语音人工接话量降幅')}
           </ChartCard>
         </Col>
         <Col {...topColProps}>
@@ -457,7 +480,7 @@ const HumanServices = () => {
             }
             total={<StatisticDisplay value={91} suffix="%" threshold="up" />}
           >
-            {renderChartWithModal('call_utilization', '语音通话利用率')}
+            {renderChartWithModal01('call_utilization', '语音通话利用率')}
           </ChartCard>
         </Col>
       </Row>

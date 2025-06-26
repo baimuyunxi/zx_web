@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Radio } from 'antd';
-import ServiceVolumeChart01 from '@/pages/HumanServices/components/Graph/01/ServiceVolumeChart01';
-import { ChartConfig, ModalState } from './useChartModal01';
+import ServiceVolumeChart02 from '@/pages/HumanServices/components/Graph/02/ServiceVolumeChart02';
+import { ChartConfig, ModalState } from './useChartModal02';
 
 /**
  * 图表卡片渲染工具
@@ -30,7 +30,7 @@ export const createMiniChart = (title: string, onClick: () => void): React.React
         e.currentTarget.style.opacity = '1';
       }}
     >
-      <ServiceVolumeChart01
+      <ServiceVolumeChart02
         isMini={true}
         title={title}
         period="7days" // 迷你图始终显示7天
@@ -73,7 +73,7 @@ export const createChartModal = (
         <Radio.Button value="02">30天</Radio.Button>
       </Radio.Group>
       <div>
-        <ServiceVolumeChart01 isMini={false} height={400} title={title} period={period} />
+        <ServiceVolumeChart02 isMini={false} height={400} title={title} period={period} />
       </div>
     </Modal>
   );
@@ -88,7 +88,7 @@ export const createChartModal = (
  * @param handleModalClose 关闭模态框的函数
  * @param handlePeriodChange 切换周期的函数
  */
-export const createChartRenderer01 = (
+export const createChartRenderer02 = (
   getModalState: (key: string) => ModalState,
   showModal: (key: string, title: string) => void,
   handleModalClose: (key: string) => void,
@@ -200,7 +200,7 @@ export const renderChartsInBatch = (
   handleModalClose: (key: string) => void,
   handlePeriodChange: (key: string, period: '7days' | '30days') => void,
 ): ChartRenderResult[] => {
-  const renderChart = createChartRenderer01(
+  const renderChart = createChartRenderer02(
     getModalState,
     showModal,
     handleModalClose,
