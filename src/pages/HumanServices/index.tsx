@@ -480,7 +480,7 @@ const HumanServices = () => {
             }
             total={<StatisticDisplay value={91} suffix="%" threshold="up" />}
           >
-            {renderChartWithModal01('call_utilization', '语音通话利用率')}
+            {renderChartWithModal02('call_utilization', '语音通话利用率')}
           </ChartCard>
         </Col>
       </Row>

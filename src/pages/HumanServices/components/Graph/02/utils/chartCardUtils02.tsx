@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Radio } from 'antd';
+import { Modal } from 'antd';
 import ServiceVolumeChart02 from '@/pages/HumanServices/components/Graph/02/ServiceVolumeChart02';
 import { ChartConfig, ModalState } from './useChartModal02';
 
@@ -64,14 +64,6 @@ export const createChartModal = (
       title={title}
       destroyOnClose={true} // 关闭时销毁内容，防止状态残留
     >
-      <Radio.Group
-        value={period === '7days' ? '01' : '02'}
-        onChange={(e) => onPeriodChange(e.target.value === '01' ? '7days' : '30days')}
-        style={{ marginTop: 8 }}
-      >
-        <Radio.Button value="01">7天</Radio.Button>
-        <Radio.Button value="02">30天</Radio.Button>
-      </Radio.Group>
       <div>
         <ServiceVolumeChart02 isMini={false} height={400} title={title} period={period} />
       </div>
