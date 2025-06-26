@@ -69,14 +69,14 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
       }),
       // 完整图配置
       ...(!isMini && {
-        title: {
-          text: title,
-          left: 'center',
-          textStyle: {
-            fontSize: 16,
-            fontWeight: 'bold',
-          },
-        },
+        // title: {
+        //   text: title,
+        //   left: 'center',
+        //   textStyle: {
+        //     fontSize: 16,
+        //     fontWeight: 'bold',
+        //   },
+        // },
         grid: {
           left: '3%',
           right: '4%',

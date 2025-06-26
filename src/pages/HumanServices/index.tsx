@@ -7,7 +7,8 @@ import useStyles from '@/pages/HumanServices/style.style';
 import CountUp from 'react-countup';
 import StatisticDisplay from '@/pages/components/StatisticDisplay';
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { createChartRenderer, useChartModal } from '@/pages/HumanServices/utils/useChartModal';
+import { useChartModal01 } from '@/pages/HumanServices/components/Graph/01/utils/useChartModal01';
+import { createChartRenderer01 } from '@/pages/HumanServices/components/Graph/01/utils/chartCardUtils01';
 
 const topColProps = {
   xs: 24,
@@ -39,9 +40,12 @@ const formatter: StatisticProps['formatter'] = (value) => {
 const HumanServices = () => {
   const { styles } = useStyles();
 
-  const { modalStates, showModal, handleModalClose, handlePeriodChange } = useChartModal();
-  const renderChartWithModal = createChartRenderer(
-    modalStates,
+  // 状态管理 - 只从 useChartModal01 获取
+  const { showModal, handleModalClose, handlePeriodChange, getModalState } = useChartModal01();
+
+  // 图表渲染器 - 从 chartCardUtils 获取
+  const renderChartWithModal = createChartRenderer01(
+    getModalState,
     showModal,
     handleModalClose,
     handlePeriodChange,
