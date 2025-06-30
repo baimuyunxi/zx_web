@@ -153,18 +153,16 @@ const HumanServices = () => {
                   <Tag color="orange" bordered={false} style={{ fontSize: 12, margin: 0 }}>
                     6月24日
                   </Tag>
-                  <span className={styles.titleSpan}>文字客服呼入量</span>
+                  <span className={styles.titleSpan}>语音客服15S接通率</span>
                 </div>
               </>
             }
             action={
-              <Tooltip title="用户请求文字客服量">
+              <Tooltip title="用户拨打10000号的人工服务请求在15秒内接通次数/人工服务请求总数*100%。">
                 <InfoCircleOutlined />
               </Tooltip>
             }
-            total={
-              <StatisticDisplay value={2156} unit="次" monthLabel="当月累计" monthValue="123万" />
-            }
+            total={<StatisticDisplay value={85} unit="%" threshold="up" />}
             footer={
               <>
                 <Trend value="12%">日环比</Trend>
@@ -172,7 +170,7 @@ const HumanServices = () => {
               </>
             }
           >
-            {renderChartWithModal01('text_service', '文字客服呼入量')}
+            {renderChartWithModal01('voice_15s_rate', '语音客服15S接通率')}
           </ChartCard>
         </Col>
         <Col {...topColProps}>
@@ -183,18 +181,16 @@ const HumanServices = () => {
                   <Tag color="#f50" bordered={false} style={{ fontSize: 12, margin: 0 }}>
                     6月23日
                   </Tag>
-                  <span className={styles.titleSpan}>远程柜台呼入量</span>
+                  <span className={styles.titleSpan}>10000号适老化接通率</span>
                 </div>
               </>
             }
             action={
-              <Tooltip title="用户请求远程柜台量">
+              <Tooltip title="用户拨打10000号进入尊老专席话务接通量/尊老专席请求量*100%。">
                 <InfoCircleOutlined />
               </Tooltip>
             }
-            total={
-              <StatisticDisplay value={1290} unit="次" monthLabel="当月累计" monthValue="123万" />
-            }
+            total={<StatisticDisplay value={90} unit="%" threshold="up" />}
             footer={
               <>
                 <Trend value="12%">日环比</Trend>
@@ -202,7 +198,7 @@ const HumanServices = () => {
               </>
             }
           >
-            {renderChartWithModal01('remote_counter', '远程柜台呼入量')}
+            {renderChartWithModal01('senior_rate', '10000号适老化接通率')}
           </ChartCard>
         </Col>
       </Row>
@@ -216,16 +212,18 @@ const HumanServices = () => {
                   <Tag color="orange" bordered={false} style={{ fontSize: 12, margin: 0 }}>
                     6月24日
                   </Tag>
-                  <span className={styles.titleSpan}>语音客服15秒接通率</span>
+                  <span className={styles.titleSpan}>文字客服呼入量</span>
                 </div>
               </>
             }
             action={
-              <Tooltip title="用户拨打10000号的人工服务请求在15秒内接通次数/人工服务请求总数*100%">
+              <Tooltip title="用户请求文字客服量">
                 <InfoCircleOutlined />
               </Tooltip>
             }
-            total={<StatisticDisplay value={85.2} suffix="%" threshold="up" />}
+            total={
+              <StatisticDisplay value={85} unit="次" monthLabel="当月累计" monthValue="123万" />
+            }
             footer={
               <>
                 <Trend value="12PP">日环比</Trend>
@@ -233,7 +231,7 @@ const HumanServices = () => {
               </>
             }
           >
-            {renderChartWithModal01('voice_15s_rate', '语音客服15秒接通率')}
+            {renderChartWithModal01('text_service', '文字客服呼入量')}
           </ChartCard>
         </Col>
         <Col {...topColProps}>
@@ -272,16 +270,18 @@ const HumanServices = () => {
                   <Tag color="orange" bordered={false} style={{ fontSize: 12, margin: 0 }}>
                     6月24日
                   </Tag>
-                  <span className={styles.titleSpan}>远程柜台25秒接通率</span>
+                  <span className={styles.titleSpan}>远程柜台呼入量</span>
                 </div>
               </>
             }
             action={
-              <Tooltip title="用户请求远柜人工服务在25秒内的接通量/远程柜台请求量*100%">
+              <Tooltip title="用户请求远程柜台量">
                 <InfoCircleOutlined />
               </Tooltip>
             }
-            total={<StatisticDisplay value={78} suffix="%" threshold="flat" />}
+            total={
+              <StatisticDisplay value={78} unit="次" monthLabel="当月累计" monthValue="123万" />
+            }
             footer={
               <>
                 <Trend value="12PP">日环比</Trend>
@@ -289,7 +289,7 @@ const HumanServices = () => {
               </>
             }
           >
-            {renderChartWithModal01('remote_25s_rate', '远程柜台25秒接通率')}
+            {renderChartWithModal01('remote_counter', '远程柜台呼入量')}
           </ChartCard>
         </Col>
         <Col {...topColProps}>
@@ -300,12 +300,12 @@ const HumanServices = () => {
                   <Tag color="orange" bordered={false} style={{ fontSize: 12, margin: 0 }}>
                     6月24日
                   </Tag>
-                  <span className={styles.titleSpan}>10009号15秒接通率</span>
+                  <span className={styles.titleSpan}>远程柜台25秒接通率</span>
                 </div>
               </>
             }
             action={
-              <Tooltip title="10009号的人工服务请求在15秒内接通次数/人工服务请求总数*100%">
+              <Tooltip title="用户请求远柜人工服务在25秒内的接通量/远程柜台请求量*100%。">
                 <InfoCircleOutlined />
               </Tooltip>
             }
@@ -317,40 +317,12 @@ const HumanServices = () => {
               </>
             }
           >
-            {renderChartWithModal01('10009_15s_rate', '10009号15秒接通率')}
+            {renderChartWithModal01('remote_25s_rate', '远程柜台25秒接通率')}
           </ChartCard>
         </Col>
       </Row>
 
       <Row gutter={24}>
-        <Col {...topColProps}>
-          <ChartCard
-            title={
-              <>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <Tag color="orange" bordered={false} style={{ fontSize: 12, margin: 0 }}>
-                    6月24日
-                  </Tag>
-                  <span className={styles.titleSpan}>10000号适老化接通率</span>
-                </div>
-              </>
-            }
-            action={
-              <Tooltip title="用户拨打10000号进入尊老专席话务接通量/尊老专席请求量*100%">
-                <InfoCircleOutlined />
-              </Tooltip>
-            }
-            total={<StatisticDisplay value={95} suffix="%" threshold="up" />}
-            footer={
-              <>
-                <Trend value="12PP">日环比</Trend>
-                <Trend value="-8PP">月环比</Trend>
-              </>
-            }
-          >
-            {renderChartWithModal01('senior_rate', '10000号适老化接通率')}
-          </ChartCard>
-        </Col>
         <Col {...topColProps}>
           <ChartCard
             title={
@@ -405,6 +377,34 @@ const HumanServices = () => {
             }
           >
             {renderChartWithModal01('repeat_call_rate', '10000号重复来电率')}
+          </ChartCard>
+        </Col>
+        <Col {...topColProps}>
+          <ChartCard
+            title={
+              <>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <Tag color="orange" bordered={false} style={{ fontSize: 12, margin: 0 }}>
+                    6月24日
+                  </Tag>
+                  <span className={styles.titleSpan}>10009号15接通率</span>
+                </div>
+              </>
+            }
+            action={
+              <Tooltip title="10009号的人工服务请求在15秒内接通次数/人工服务请求总数*100%。">
+                <InfoCircleOutlined />
+              </Tooltip>
+            }
+            total={<StatisticDisplay value={95} suffix="%" threshold="up" />}
+            footer={
+              <>
+                <Trend value="12PP">日环比</Trend>
+                <Trend value="-8PP">月环比</Trend>
+              </>
+            }
+          >
+            {renderChartWithModal01('10009_15s_rate', '10009号15接通率')}
           </ChartCard>
         </Col>
       </Row>
