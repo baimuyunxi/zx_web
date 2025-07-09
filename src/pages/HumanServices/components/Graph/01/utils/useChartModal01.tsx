@@ -26,7 +26,7 @@ export const useChartModal01 = () => {
   const [modalStates, setModalStates] = useState<ModalStates>({});
 
   // 显示模态框
-  const showModal01 = (key: string, title: string) => {
+  const showModal01 = (key: string, title: string, chartData: any) => {
     setModalStates((prev) => ({
       ...prev,
       [key]: {

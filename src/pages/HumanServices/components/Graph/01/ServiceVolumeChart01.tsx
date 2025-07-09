@@ -1,11 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 
+export interface ChartData {
+  volumeData: number[];
+  ratioData: number[];
+  categories: string[];
+}
+
 interface ServiceVolumeChartProps {
   isMini?: boolean;
   height?: number;
   title?: string;
   period?: '7days' | '30days';
+  chartData?: ChartData;
 }
 
 const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
@@ -13,6 +20,7 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
   height = 300,
   title = '数据趋势',
   period = '7days',
+  chartData,
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts>();
@@ -23,55 +31,25 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
     // 初始化图表
     chartInstance.current = echarts.init(chartRef.current);
 
-    // 根据周期生成不同的模拟数据
-    const getData = () => {
-      // 生成-20%到30%之间的随机日环比数据
-      const generateRandomRatio = () => {
-        return Math.random() * 50 - 20; // -20% 到 30% 之间
+    // 如果没有数据或数据为空，显示空状态
+    if (!chartData || chartData.volumeData.length === 0) {
+      const option: echarts.EChartsOption = {
+        graphic: {
+          type: 'text',
+          left: 'center',
+          top: 'middle',
+          style: {
+            text: '暂无数据',
+            fontSize: isMini ? 10 : 14,
+            fill: '#999',
+          },
+        },
       };
+      chartInstance.current.setOption(option);
+      return;
+    }
 
-      if (period === '7days') {
-        const volumeData = [8200, 9320, 9010, 9340, 12900, 13300, 13200];
-        const categories = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
-
-        // 生成随机日环比数据（-20%到30%之间）
-        const ratioData = categories.map((_, index) => {
-          if (index === 0) return 0; // 第一天没有环比
-          return Number(generateRandomRatio().toFixed(2));
-        });
-
-        return {
-          volumeData,
-          ratioData,
-          categories,
-        };
-      } else {
-        // 30天数据
-        const days = [];
-        const volumeData = [];
-        const ratioData = [];
-
-        for (let i = 1; i <= 30; i++) {
-          days.push(`${i}日`);
-          // 生成随机数据，模拟30天的波动
-          volumeData.push(Math.floor(Math.random() * 5000) + 8000);
-          // 生成随机日环比数据（-20%到30%之间）
-          if (i === 1) {
-            ratioData.push(0); // 第一天没有环比
-          } else {
-            ratioData.push(Number(generateRandomRatio().toFixed(2)));
-          }
-        }
-
-        return {
-          volumeData,
-          ratioData,
-          categories: days,
-        };
-      }
-    };
-
-    const { volumeData, ratioData, categories } = getData();
+    const { volumeData, ratioData, categories } = chartData;
 
     const option: echarts.EChartsOption = {
       // 迷你图配置
@@ -88,6 +66,19 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
         yAxis: [{ show: false }, { show: false }],
         tooltip: {
           trigger: 'axis',
+          formatter: function (params: any) {
+            let result = `${params[0].axisValue}<br/>`;
+            params.forEach((param: any) => {
+              if (param.seriesName === title) {
+                // 根据指标类型显示不同单位
+                const unit = title.includes('率') ? '%' : '次';
+                result += `${param.marker}${param.seriesName}: ${param.value.toLocaleString()}${unit}<br/>`;
+              } else {
+                result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}%<br/>`;
+              }
+            });
+            return result;
+          },
         },
       }),
       // 完整图配置
@@ -126,7 +117,7 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
         data: categories,
         axisLabel: {
           show: !isMini,
-          rotate: period === '30days' && !isMini ? 45 : 0,
+          rotate: categories.length > 15 && !isMini ? 45 : 0,
         },
         axisLine: {
           show: !isMini,
@@ -269,7 +260,7 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
       window.removeEventListener('resize', handleResize);
       chartInstance.current?.dispose();
     };
-  }, [isMini, height, title, period]);
+  }, [isMini, height, title, period, chartData]);
 
   return (
     <div
