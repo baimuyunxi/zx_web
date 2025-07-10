@@ -2,7 +2,7 @@ import moment from 'moment';
 
 // 指标数据接口
 export interface IndicatorData {
-  pDayId: string;
+  PDayId: string;
   prevDay: number;
   prevMonth: number;
   momRate: number;
@@ -44,10 +44,20 @@ export interface ProcessedIndicatorData {
  * @returns 处理后的数据
  */
 export const processIndicatorData = (response: IndicatorResponse): ProcessedIndicatorData => {
+  console.log('processIndicatorData - Input response:', response);
+
   const { data, maxPDayId, pdDate, threshold } = response;
 
-  // 检查数据是否同步
-  if (!pdDate || !data || data.length === 0) {
+  // 检查数据是否同步 - 修复判断逻辑
+  const isDataSynced = pdDate && data && data.length > 0;
+  console.log('Data sync check:', {
+    pdDate,
+    hasData: !!data,
+    dataLength: data?.length || 0,
+    isDataSynced,
+  });
+
+  if (!isDataSynced) {
     return {
       currentValue: 0,
       monthValue: 0,
@@ -67,6 +77,7 @@ export const processIndicatorData = (response: IndicatorResponse): ProcessedIndi
 
   // 获取最新数据（pDayId最大的数据）
   const latestData = data[0]; // 数据已按pDayId降序排序
+  console.log('Latest data:', latestData);
 
   // 处理日期标签和颜色
   const { dateTag, dateColor } = processDateTag(maxPDayId);
@@ -80,7 +91,7 @@ export const processIndicatorData = (response: IndicatorResponse): ProcessedIndi
   const dayRatio = latestData.momRate || 0;
   const monthRatio = latestData.monthMomRate || 0;
 
-  return {
+  const result = {
     currentValue,
     monthValue,
     dayRatio,
@@ -91,6 +102,9 @@ export const processIndicatorData = (response: IndicatorResponse): ProcessedIndi
     isDataSynced: true,
     threshold,
   };
+
+  console.log('processIndicatorData - Output result:', result);
+  return result;
 };
 
 /**
@@ -99,6 +113,8 @@ export const processIndicatorData = (response: IndicatorResponse): ProcessedIndi
  * @returns 日期标签和颜色
  */
 const processDateTag = (maxPDayId: string): { dateTag: string; dateColor: string } => {
+  console.log('processDateTag - Input maxPDayId:', maxPDayId);
+
   if (!maxPDayId) {
     return { dateTag: '暂无数据', dateColor: '#f50' };
   }
@@ -107,13 +123,18 @@ const processDateTag = (maxPDayId: string): { dateTag: string; dateColor: string
   const yesterday = moment().subtract(1, 'day');
   const yesterdayFormatted = yesterday.format('M月D日');
 
+  console.log('Date comparison:', { maxPDayId, yesterdayFormatted });
+
   // 判断是否为昨天
   const isYesterday = maxPDayId === yesterdayFormatted;
 
-  return {
+  const result = {
     dateTag: maxPDayId,
     dateColor: isYesterday ? 'orange' : '#f50',
   };
+
+  console.log('processDateTag - Output result:', result);
+  return result;
 };
 
 /**
@@ -130,7 +151,10 @@ const processChartData = (
   ratioData: number[];
   categories: string[];
 } => {
+  console.log('processChartData - Input:', { dataLength: data?.length || 0, period });
+
   if (!data || data.length === 0) {
+    console.log('processChartData - No data, returning empty');
     return {
       volumeData: [],
       ratioData: [],
@@ -147,17 +171,24 @@ const processChartData = (
       ? reversedData.slice(-7) // 取最后7天
       : reversedData.slice(-30); // 取最后30天
 
-  console.log('processChartData:', {
+  console.log('processChartData - Data processing:', {
     originalLength: data.length,
     reversedLength: reversedData.length,
     limitedLength: limitedData.length,
     period,
-    limitedData: limitedData.map((item) => ({ pDayId: item.pDayId, prevDay: item.prevDay })),
+    sampleData: limitedData.slice(0, 3).map((item) => ({
+      PDayId: item.PDayId,
+      prevDay: item.prevDay,
+    })),
   });
 
   const volumeData = limitedData.map((item) => item.prevDay || 0);
   const ratioData = limitedData.map((item) => item.momRate || 0);
-  const categories = limitedData.map((item) => formatDateForChart(item.pDayId));
+  const categories = limitedData.map((item) => formatDateForChart(item.PDayId));
+
+  console.log('processChartData - Generated categories:', categories);
+  console.log('processChartData - Generated volumeData:', volumeData);
+  console.log('processChartData - Generated ratioData:', ratioData);
 
   return {
     volumeData,
@@ -180,28 +211,44 @@ export const reprocessChartDataByPeriod = (
   ratioData: number[];
   categories: string[];
 } => {
+  console.log('reprocessChartDataByPeriod called with:', { dataLength: data?.length || 0, period });
   return processChartData(data, period);
 };
 
 /**
  * 格式化日期用于图表显示
- * @param pDayId 日期ID (yyyyMMdd格式)
+ * @param PDayId 日期ID (yyyyMMdd格式)
  * @returns 格式化后的日期字符串
  */
-const formatDateForChart = (pDayId: string): string => {
-  if (!pDayId || pDayId.length !== 8) {
-    return pDayId;
+const formatDateForChart = (PDayId: string): string => {
+  console.log('formatDateForChart - Input PDayId:', PDayId);
+
+  if (!PDayId) {
+    console.log('formatDateForChart - Empty PDayId, returning empty string');
+    return '';
   }
 
-  const year = pDayId.substring(0, 4);
-  const month = pDayId.substring(4, 6);
-  const day = pDayId.substring(6, 8);
+  if (PDayId.length !== 8) {
+    console.log('formatDateForChart - Invalid PDayId length:', PDayId.length, 'returning as-is');
+    return PDayId;
+  }
 
-  // 去掉前导零
-  const monthInt = parseInt(month, 10);
-  const dayInt = parseInt(day, 10);
+  try {
+    const year = PDayId.substring(0, 4);
+    const month = PDayId.substring(4, 6);
+    const day = PDayId.substring(6, 8);
 
-  return `${monthInt}/${dayInt}`;
+    // 去掉前导零
+    const monthInt = parseInt(month, 10);
+    const dayInt = parseInt(day, 10);
+
+    const result = `${monthInt}月${dayInt}日`;
+    console.log('formatDateForChart - Formatted result:', { PDayId, result });
+    return result;
+  } catch (error) {
+    console.error('formatDateForChart - Error formatting:', error, 'PDayId:', PDayId);
+    return PDayId;
+  }
 };
 
 /**

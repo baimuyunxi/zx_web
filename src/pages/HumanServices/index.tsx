@@ -132,8 +132,13 @@ const HumanServices = () => {
   }, []);
 
   // 渲染数据同步提示
-  const renderUnsyncedData = () => (
-    <StatisticDisplay value={0} unit="次" monthLabel="数据暂未同步" monthValue="--" />
+  const renderUnsyncedData = (unit: string = '次') => (
+    <StatisticDisplay value={0} unit={unit} monthLabel="数据暂未同步" monthValue="--" />
+  );
+
+  // 渲染数据同步提示（百分比类型）
+  const renderUnsyncedPercentageData = () => (
+    <StatisticDisplay value={0} suffix="%" monthLabel="数据暂未同步" />
   );
 
   // 判断是否为呼入量指标（只有呼入量指标才显示月环比）
@@ -308,7 +313,7 @@ const HumanServices = () => {
                   threshold={indicatorData.conn15Rate.threshold || 'up'}
                 />
               ) : (
-                <StatisticDisplay value={0} unit="%" monthLabel="数据暂未同步" />
+                renderUnsyncedPercentageData()
               )
             }
             footer={renderFooter(
@@ -355,7 +360,7 @@ const HumanServices = () => {
                   threshold={indicatorData.artConnRt.threshold || 'up'}
                 />
               ) : (
-                <StatisticDisplay value={0} unit="%" monthLabel="数据暂未同步" />
+                renderUnsyncedPercentageData()
               )
             }
             footer={renderFooter(
@@ -451,7 +456,7 @@ const HumanServices = () => {
                   threshold={indicatorData.word5Rate.threshold || 'down'}
                 />
               ) : (
-                <StatisticDisplay value={0} suffix="%" monthLabel="数据暂未同步" />
+                renderUnsyncedPercentageData()
               )
             }
             footer={renderFooter(
@@ -545,7 +550,7 @@ const HumanServices = () => {
                   threshold={indicatorData.farCabinetRate.threshold || 'up'}
                 />
               ) : (
-                <StatisticDisplay value={0} suffix="%" monthLabel="数据暂未同步" />
+                renderUnsyncedPercentageData()
               )
             }
             footer={renderFooter(
@@ -594,7 +599,7 @@ const HumanServices = () => {
                   threshold={indicatorData.onceRate.threshold || 'up'}
                 />
               ) : (
-                <StatisticDisplay value={0} suffix="%" monthLabel="数据暂未同步" />
+                renderUnsyncedPercentageData()
               )
             }
             footer={renderFooter(
@@ -641,7 +646,7 @@ const HumanServices = () => {
                   threshold={indicatorData.repeatRate.threshold || 'up'}
                 />
               ) : (
-                <StatisticDisplay value={0} suffix="%" monthLabel="数据暂未同步" />
+                renderUnsyncedPercentageData()
               )
             }
             footer={renderFooter(
