@@ -49,6 +49,18 @@ const StatisticDisplay: React.FC<StatisticDisplayProps> = ({
   // 判断是否显示月累计标签
   const showMonthTag = monthLabel && monthValue !== undefined && monthValue !== null;
 
+  // 根据threshold获取颜色
+  const getThresholdColor = (thresholdType?: string) => {
+    if (!thresholdType) return '#1890ff'; // 默认蓝色
+
+    switch (thresholdType) {
+      case 'down':
+        return '#ff4d4f'; // 红色
+      default:
+        return '#52c41a'; // 绿色
+    }
+  };
+
   // 根据threshold获取图标和颜色
   const getThresholdIcon = (thresholdType: string) => {
     if (!thresholdType) return null;
@@ -93,14 +105,14 @@ const StatisticDisplay: React.FC<StatisticDisplayProps> = ({
           <Statistic
             value={value}
             formatter={formatter}
-            valueStyle={{ color: '#1890ff', fontWeight: 'bold' }}
+            valueStyle={{ color: getThresholdColor(threshold), fontWeight: 'bold' }}
             suffix={suffix}
           />
         ) : (
           <Statistic
             value={value}
             formatter={formatter}
-            valueStyle={{ color: '#1890ff', fontWeight: 'bold' }}
+            valueStyle={{ color: getThresholdColor(threshold), fontWeight: 'bold' }}
           />
         )}
         {unit && <span className={styles.totalSpan}>{unit}</span>}

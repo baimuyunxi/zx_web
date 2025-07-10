@@ -664,34 +664,34 @@ const HumanServices = () => {
           </ChartCard>
         </Col>
 
-        <Col {...topColProps}>
-          <ChartCard
-            title={
-              <>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <Tag color="orange" bordered={false} style={{ fontSize: 12, margin: 0 }}>
-                    6月24日
-                  </Tag>
-                  <span className={styles.titleSpan}>10009号15接通率</span>
-                </div>
-              </>
-            }
-            action={
-              <Tooltip title="10009号的人工服务请求在15秒内接通次数/人工服务请求总数*100%。">
-                <InfoCircleOutlined />
-              </Tooltip>
-            }
-            total={<StatisticDisplay value={95} suffix="%" threshold="up" />}
-            footer={
-              <>
-                <Trend value="12PP">日环比</Trend>
-                <Trend value="-8PP">月环比</Trend>
-              </>
-            }
-          >
-            {renderChartWithModal01('10009_15s_rate', '10009号15接通率')}
-          </ChartCard>
-        </Col>
+        {/*<Col {...topColProps}>*/}
+        {/*  <ChartCard*/}
+        {/*    title={*/}
+        {/*      <>*/}
+        {/*        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>*/}
+        {/*          <Tag color="orange" bordered={false} style={{ fontSize: 12, margin: 0 }}>*/}
+        {/*            6月24日*/}
+        {/*          </Tag>*/}
+        {/*          <span className={styles.titleSpan}>10009号15接通率</span>*/}
+        {/*        </div>*/}
+        {/*      </>*/}
+        {/*    }*/}
+        {/*    action={*/}
+        {/*      <Tooltip title="10009号的人工服务请求在15秒内接通次数/人工服务请求总数*100%。">*/}
+        {/*        <InfoCircleOutlined />*/}
+        {/*      </Tooltip>*/}
+        {/*    }*/}
+        {/*    total={<StatisticDisplay value={95} suffix="%" threshold="up" />}*/}
+        {/*    footer={*/}
+        {/*      <>*/}
+        {/*        <Trend value="12PP">日环比</Trend>*/}
+        {/*        <Trend value="-8PP">月环比</Trend>*/}
+        {/*      </>*/}
+        {/*    }*/}
+        {/*  >*/}
+        {/*    {renderChartWithModal01('10009_15s_rate', '10009号15接通率')}*/}
+        {/*  </ChartCard>*/}
+        {/*</Col>*/}
       </Row>
 
       <Divider orientation="left" style={{ fontSize: 18, fontWeight: 'bold', marginTop: 12 }}>

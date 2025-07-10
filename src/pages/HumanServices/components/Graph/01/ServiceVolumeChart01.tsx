@@ -142,6 +142,8 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
           type: 'value',
           name: isMini ? '' : title.includes('率') ? '百分比' : '服务量',
           position: 'left',
+          scale: true, // 开启自适应范围，不强制从0开始
+          // min: title.includes('率') ? 50 : 'dataMin', // 百分比类型默认从50%开始，其他类型自适应
           axisLabel: {
             show: !isMini,
             formatter: function (value: number) {
