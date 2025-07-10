@@ -12,23 +12,25 @@ import { createChartRenderer01 } from '@/pages/HumanServices/components/Graph/01
 import { useChartModal02 } from '@/pages/HumanServices/components/Graph/02/utils/useChartModal02';
 import { createChartRenderer02 } from '@/pages/HumanServices/components/Graph/02/utils/chartCardUtils02';
 import {
-  getWanHaoCt,
   getArtCallinCt,
-  getConn15Rate,
   getArtConnRt,
-  getWordCallinCt,
-  getWord5Rate,
+  getConn15Rate,
   getFarCabinetCt,
   getFarCabinetRate,
   getOnceRate,
   getRepeatRate,
+  getWanHaoCt,
+  getWord5Rate,
+  getWordCallinCt,
 } from './service';
 import {
-  processIndicatorData,
-  ProcessedIndicatorData,
-  formatValue,
   formatPercentage,
   formatPP,
+  formatValue,
+  IndicatorData,
+  IndicatorResponse,
+  ProcessedIndicatorData,
+  processIndicatorData,
 } from './utils/indicatorDataUtils';
 
 const topColProps = {
@@ -54,6 +56,7 @@ const HumanServices = () => {
 
   // 状态管理
   const [indicatorData, setIndicatorData] = useState<Record<string, ProcessedIndicatorData>>({});
+  const [originalData, setOriginalData] = useState<Record<string, IndicatorData[]>>({});
   const [loading, setLoading] = useState<Record<string, boolean>>({});
 
   /**
@@ -79,11 +82,18 @@ const HumanServices = () => {
   );
 
   // 加载指标数据
-  const loadIndicatorData = async (key: string, apiCall: () => Promise<any>) => {
+  const loadIndicatorData = async (key: string, apiCall: () => Promise<IndicatorResponse>) => {
     setLoading((prev) => ({ ...prev, [key]: true }));
     try {
       const response = await apiCall();
+      console.log(`${key} API Response:`, response);
+
+      // 存储原始数据
+      setOriginalData((prev) => ({ ...prev, [key]: response.data || [] }));
+
+      // 处理数据
       const processedData = processIndicatorData(response);
+      console.log(`${key} Processed Data:`, processedData);
       setIndicatorData((prev) => ({ ...prev, [key]: processedData }));
     } catch (error) {
       console.error(`加载${key}数据失败:`, error);
@@ -101,6 +111,7 @@ const HumanServices = () => {
           isDataSynced: false,
         },
       }));
+      setOriginalData((prev) => ({ ...prev, [key]: [] }));
     } finally {
       setLoading((prev) => ({ ...prev, [key]: false }));
     }
@@ -125,16 +136,9 @@ const HumanServices = () => {
     <StatisticDisplay value={0} unit="次" monthLabel="数据暂未同步" monthValue="--" />
   );
 
-  // 判断是否为接通率指标（只有接通率指标才显示月环比）
-  const isRateIndicator = (key: string): boolean => {
-    return [
-      'conn15Rate',
-      'artConnRt',
-      'word5Rate',
-      'farCabinetRate',
-      'onceRate',
-      'repeatRate',
-    ].includes(key);
+  // 判断是否为呼入量指标（只有呼入量指标才显示月环比）
+  const isVolumeIndicator = (key: string): boolean => {
+    return ['wanHaoCt', 'artCallinCt', 'wordCallinCt', 'farCabinetCt'].includes(key);
   };
 
   // 渲染Footer
@@ -147,7 +151,7 @@ const HumanServices = () => {
       return (
         <>
           <Trend value="--">日环比</Trend>
-          {isRateIndicator(indicatorKey) && <Trend value="--">月环比</Trend>}
+          {isVolumeIndicator(indicatorKey) && <Trend value="--">月环比</Trend>}
         </>
       );
     }
@@ -157,7 +161,7 @@ const HumanServices = () => {
         <Trend value={isPercentage ? formatPP(data.dayRatio) : formatPercentage(data.dayRatio)}>
           日环比
         </Trend>
-        {isRateIndicator(indicatorKey) && (
+        {isVolumeIndicator(indicatorKey) && (
           <Trend
             value={isPercentage ? formatPP(data.monthRatio) : formatPercentage(data.monthRatio)}
           >
@@ -173,6 +177,7 @@ const HumanServices = () => {
       <Divider orientation="left" style={{ fontSize: 18, fontWeight: 'bold' }}>
         <Space>
           📊 日指标
+          {/*@ts-ignore*/}
           <Tag color="blue" size="small">
             日度更新
           </Tag>
@@ -222,6 +227,7 @@ const HumanServices = () => {
               'total_volume',
               '万号人工话务总量',
               indicatorData.wanHaoCt?.chartData,
+              originalData.wanHaoCt,
             )}
           </ChartCard>
         </Col>
@@ -268,6 +274,7 @@ const HumanServices = () => {
               'voice_calls',
               '语音人工呼入量',
               indicatorData.artCallinCt?.chartData,
+              originalData.artCallinCt,
             )}
           </ChartCard>
         </Col>
@@ -314,6 +321,7 @@ const HumanServices = () => {
               'voice_15s_rate',
               '语音客服15S接通率',
               indicatorData.conn15Rate?.chartData,
+              originalData.conn15Rate,
             )}
           </ChartCard>
         </Col>
@@ -360,6 +368,7 @@ const HumanServices = () => {
               'senior_rate',
               '10000号适老化接通率',
               indicatorData.artConnRt?.chartData,
+              originalData.artConnRt,
             )}
           </ChartCard>
         </Col>
@@ -408,6 +417,7 @@ const HumanServices = () => {
               'text_service',
               '文字客服呼入量',
               indicatorData.wordCallinCt?.chartData,
+              originalData.wordCallinCt,
             )}
           </ChartCard>
         </Col>
@@ -454,6 +464,7 @@ const HumanServices = () => {
               'text_5min_rate',
               '文字客服5分钟接通率',
               indicatorData.word5Rate?.chartData,
+              originalData.word5Rate,
             )}
           </ChartCard>
         </Col>
@@ -500,6 +511,7 @@ const HumanServices = () => {
               'remote_counter',
               '远程柜台呼入量',
               indicatorData.farCabinetCt?.chartData,
+              originalData.farCabinetCt,
             )}
           </ChartCard>
         </Col>
@@ -546,6 +558,7 @@ const HumanServices = () => {
               'remote_25s_rate',
               '远程柜台25秒接通率',
               indicatorData.farCabinetRate?.chartData,
+              originalData.farCabinetRate,
             )}
           </ChartCard>
         </Col>
@@ -594,6 +607,7 @@ const HumanServices = () => {
               'first_solution_rate',
               '10000号人工一解率',
               indicatorData.onceRate?.chartData,
+              originalData.onceRate,
             )}
           </ChartCard>
         </Col>
@@ -640,6 +654,7 @@ const HumanServices = () => {
               'repeat_call_rate',
               '10000号重复来电率',
               indicatorData.repeatRate?.chartData,
+              originalData.repeatRate,
             )}
           </ChartCard>
         </Col>
@@ -677,6 +692,7 @@ const HumanServices = () => {
       <Divider orientation="left" style={{ fontSize: 18, fontWeight: 'bold', marginTop: 12 }}>
         <Space>
           📈 月指标
+          {/*@ts-ignore*/}
           <Tag color="green" size="small">
             月度统计
           </Tag>

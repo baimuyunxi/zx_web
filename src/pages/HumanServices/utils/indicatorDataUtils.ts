@@ -71,8 +71,8 @@ export const processIndicatorData = (response: IndicatorResponse): ProcessedIndi
   // 处理日期标签和颜色
   const { dateTag, dateColor } = processDateTag(maxPDayId);
 
-  // 处理图表数据
-  const chartData = processChartData(data);
+  // 处理图表数据 - 默认显示7天
+  const chartData = processChartData(data, '7days');
 
   // 格式化数值
   const currentValue = latestData.prevDay || 0;
@@ -119,10 +119,12 @@ const processDateTag = (maxPDayId: string): { dateTag: string; dateColor: string
 /**
  * 处理图表数据
  * @param data 原始数据数组
+ * @param period 时间周期
  * @returns 图表数据
  */
 const processChartData = (
   data: IndicatorData[],
+  period: '7days' | '30days' = '7days',
 ): {
   volumeData: number[];
   ratioData: number[];
@@ -139,15 +141,46 @@ const processChartData = (
   // 数据已按pDayId降序排序，需要反转为升序以便图表显示
   const reversedData = [...data].reverse();
 
-  const volumeData = reversedData.map((item) => item.prevDay || 0);
-  const ratioData = reversedData.map((item) => item.momRate || 0);
-  const categories = reversedData.map((item) => formatDateForChart(item.pDayId));
+  // 根据周期限制数据量
+  const limitedData =
+    period === '7days'
+      ? reversedData.slice(-7) // 取最后7天
+      : reversedData.slice(-30); // 取最后30天
+
+  console.log('processChartData:', {
+    originalLength: data.length,
+    reversedLength: reversedData.length,
+    limitedLength: limitedData.length,
+    period,
+    limitedData: limitedData.map((item) => ({ pDayId: item.pDayId, prevDay: item.prevDay })),
+  });
+
+  const volumeData = limitedData.map((item) => item.prevDay || 0);
+  const ratioData = limitedData.map((item) => item.momRate || 0);
+  const categories = limitedData.map((item) => formatDateForChart(item.pDayId));
 
   return {
     volumeData,
     ratioData,
     categories,
   };
+};
+
+/**
+ * 根据指定周期重新处理图表数据
+ * @param data 原始数据数组
+ * @param period 时间周期
+ * @returns 图表数据
+ */
+export const reprocessChartDataByPeriod = (
+  data: IndicatorData[],
+  period: '7days' | '30days',
+): {
+  volumeData: number[];
+  ratioData: number[];
+  categories: string[];
+} => {
+  return processChartData(data, period);
 };
 
 /**

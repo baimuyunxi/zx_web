@@ -28,11 +28,20 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
   useEffect(() => {
     if (!chartRef.current) return;
 
+    console.log('ServiceVolumeChart - Rendering with props:', {
+      title,
+      isMini,
+      hasChartData: !!chartData,
+      chartDataLength: chartData?.volumeData?.length || 0,
+      chartData: chartData,
+    });
+
     // 初始化图表
     chartInstance.current = echarts.init(chartRef.current);
 
     // 如果没有数据或数据为空，显示空状态
-    if (!chartData || chartData.volumeData.length === 0) {
+    if (!chartData || !chartData.volumeData || chartData.volumeData.length === 0) {
+      console.log('ServiceVolumeChart - No valid data, showing empty state');
       const option: echarts.EChartsOption = {
         graphic: {
           type: 'text',
@@ -50,6 +59,7 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
     }
 
     const { volumeData, ratioData, categories } = chartData;
+    console.log('ServiceVolumeChart - Using data:', { volumeData, ratioData, categories });
 
     const option: echarts.EChartsOption = {
       // 迷你图配置
@@ -247,6 +257,7 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
       animationDuration: 1000,
     };
 
+    console.log('ServiceVolumeChart - Setting chart option:', option);
     chartInstance.current.setOption(option);
 
     // 响应式处理
