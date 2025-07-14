@@ -44,7 +44,7 @@ export const INDICATOR_CONFIGS = {
   // 月指标（新增）
   voiceUseRate: {
     type: 'rate',
-    direction: 'higher_better',
+    direction: 'lower_better', // 修改：下降为好的趋势（绿色）
     threshold: 73.8,
     name: '语音通话利用率',
   },
