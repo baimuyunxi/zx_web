@@ -2,6 +2,7 @@ import React from 'react';
 import { FallOutlined, RiseOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
 import useStyles from './index.style';
+import { getIndicatorTrendGoodness } from '@/pages/HumanServices/utils/indicatorConfig';
 
 export type TrendProps = {
   style?: React.CSSProperties;
@@ -9,6 +10,7 @@ export type TrendProps = {
   className?: string;
   children?: React.ReactNode;
   value?: string | number;
+  indicatorKey?: string; // 新增：指标标识
 };
 
 const Trend: React.FC<TrendProps> = ({
@@ -17,6 +19,7 @@ const Trend: React.FC<TrendProps> = ({
   className,
   children,
   value,
+  indicatorKey, // 新增参数
   ...rest
 }) => {
   const { styles } = useStyles();
@@ -46,7 +49,7 @@ const Trend: React.FC<TrendProps> = ({
     if (numericValue === null) {
       return {
         direction: undefined,
-        valueColor: undefined,
+        valueColor: '#666',
         arrowColor: '#666',
       };
     }
@@ -54,7 +57,7 @@ const Trend: React.FC<TrendProps> = ({
     if (numericValue === 0) {
       return {
         direction: undefined,
-        valueColor: undefined,
+        valueColor: '#666',
         arrowColor: '#666',
       };
     }
@@ -62,17 +65,43 @@ const Trend: React.FC<TrendProps> = ({
     const isPositive = numericValue > 0;
     const direction = isPositive ? 'up' : 'down';
 
-    // 数值颜色：正数绿色，负数红色
-    const valueColor = isPositive ? '#52c41a' : '#ff4d4f';
-
-    // 箭头颜色：根据reverseColor决定
+    // 根据指标好坏判断数值颜色
+    let valueColor: string;
     let arrowColor: string;
-    if (reverseColor) {
-      // 反转颜色：up为红色，down为绿色
-      arrowColor = isPositive ? '#ff4d4f' : '#52c41a';
+
+    if (indicatorKey) {
+      // 有指标标识时，根据指标好坏判断颜色
+      const trendGoodness = getIndicatorTrendGoodness(indicatorKey, numericValue);
+
+      switch (trendGoodness) {
+        case 'good':
+          valueColor = '#52c41a'; // 绿色 - 好的趋势
+          arrowColor = '#52c41a';
+          break;
+        case 'bad':
+          valueColor = '#ff4d4f'; // 红色 - 坏的趋势
+          arrowColor = '#ff4d4f';
+          break;
+        case 'neutral':
+        default:
+          // 中性时保持原有逻辑：正数绿色，负数红色
+          valueColor = isPositive ? '#52c41a' : '#ff4d4f';
+          arrowColor = isPositive ? '#52c41a' : '#ff4d4f';
+          break;
+      }
     } else {
-      // 正常颜色：up为绿色，down为红色
-      arrowColor = isPositive ? '#52c41a' : '#ff4d4f';
+      // 没有指标标识时，使用原有逻辑或reverseColor
+      let shouldReverse = reverseColor || false;
+
+      if (shouldReverse) {
+        // 反转颜色：up为红色，down为绿色
+        valueColor = isPositive ? '#ff4d4f' : '#52c41a';
+        arrowColor = isPositive ? '#ff4d4f' : '#52c41a';
+      } else {
+        // 正常颜色：up为绿色，down为红色
+        valueColor = isPositive ? '#52c41a' : '#ff4d4f';
+        arrowColor = isPositive ? '#52c41a' : '#ff4d4f';
+      }
     }
 
     return {

@@ -1,9 +1,17 @@
 import { useState } from 'react';
 
-// 模态框状态类型定义 - 移除period字段
+// 图表数据接口
+export interface ChartData {
+  volumeData: number[];
+  ratioData: number[];
+  categories: string[];
+}
+
+// 模态框状态类型定义 - 添加图表数据支持
 export interface ModalState {
   visible: boolean;
   title: string;
+  chartData?: ChartData; // 添加图表数据支持
 }
 
 // 模态框状态管理
@@ -19,18 +27,20 @@ export interface ChartConfig {
 
 /**
  * 图表模态框状态管理 Hook
- * 专注于月指标的状态管理，简化功能
+ * 专注于月指标的状态管理，支持图表数据传递
  */
 export const useChartModal02 = () => {
   const [modalStates, setModalStates] = useState<ModalStates>({});
 
-  // 显示模态框 - 移除period参数
-  const showModal02 = (key: string, title: string) => {
+  // 显示模态框 - 支持传递图表数据
+  const showModal02 = (key: string, title: string, chartData?: ChartData) => {
+    console.log('showModal02 called with:', { key, title, chartData }); // 调试输出
     setModalStates((prev) => ({
       ...prev,
       [key]: {
         visible: true,
         title: title,
+        chartData: chartData, // 存储图表数据
       },
     }));
   };
@@ -52,6 +62,7 @@ export const useChartModal02 = () => {
       modalStates[key] || {
         visible: false,
         title: '',
+        chartData: undefined,
       }
     );
   };

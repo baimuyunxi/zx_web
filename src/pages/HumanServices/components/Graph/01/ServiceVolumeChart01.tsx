@@ -39,22 +39,9 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
     // 初始化图表
     chartInstance.current = echarts.init(chartRef.current);
 
-    // 如果没有数据或数据为空，显示空状态
+    // 如果没有数据，直接返回，不显示任何内容
     if (!chartData || !chartData.volumeData || chartData.volumeData.length === 0) {
-      console.log('ServiceVolumeChart - No valid data, showing empty state');
-      const option: echarts.EChartsOption = {
-        graphic: {
-          type: 'text',
-          left: 'center',
-          top: 'middle',
-          style: {
-            text: '暂无数据',
-            fontSize: isMini ? 10 : 14,
-            fill: '#999',
-          },
-        },
-      };
-      chartInstance.current.setOption(option);
+      console.log('ServiceVolumeChart - No valid data, chart will remain empty');
       return;
     }
 

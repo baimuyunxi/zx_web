@@ -1,50 +1,71 @@
 import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 
+export interface ChartData {
+  volumeData: number[];
+  ratioData: number[];
+  categories: string[];
+}
+
 interface ServiceVolumeChartProps {
   isMini?: boolean;
   height?: number;
   title?: string;
+  chartData?: ChartData;
 }
 
 const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
   isMini = false,
   height = 300,
   title = '数据趋势',
+  chartData,
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts>();
 
+  // 根据指标标题获取对应的单位
+  const getUnitByTitle = (title: string): string => {
+    if (title.includes('利用率') || title.includes('降幅')) {
+      return '%';
+    } else if (title.includes('强度')) {
+      return '时';
+    } else if (title.includes('接话量')) {
+      return '次';
+    }
+    return '次'; // 默认单位
+  };
+
+  // 判断是否为百分比类指标（环比应显示PP）
+  const isPercentageIndicator = (title: string): boolean => {
+    return title.includes('利用率') || title.includes('降幅');
+  };
+
   useEffect(() => {
     if (!chartRef.current) return;
+
+    console.log('ServiceVolumeChart02 - Rendering with props:', {
+      title,
+      isMini,
+      hasChartData: !!chartData,
+      chartDataLength: chartData?.volumeData?.length || 0,
+      chartData: chartData,
+    });
 
     // 初始化图表
     chartInstance.current = echarts.init(chartRef.current);
 
-    // 月指标固定数据（模拟7个月的数据）
-    const getData = () => {
-      // 生成-20%到30%之间的随机月环比数据
-      const generateRandomRatio = () => {
-        return Math.random() * 50 - 20; // -20% 到 30% 之间
-      };
+    // 如果没有数据，直接返回，不显示任何内容
+    if (!chartData || !chartData.volumeData || chartData.volumeData.length === 0) {
+      console.log('ServiceVolumeChart02 - No valid data, chart will remain empty');
+      return;
+    }
 
-      const volumeData = [8200, 9320, 9010, 9340, 12900, 13300, 13200];
-      const categories = ['1月', '2月', '3月', '4月', '5月', '6月', '7月'];
+    const { volumeData, ratioData, categories } = chartData;
+    console.log('ServiceVolumeChart02 - Using data:', { volumeData, ratioData, categories });
 
-      // 生成随机月环比数据（-20%到30%之间）
-      const ratioData = categories.map((_, index) => {
-        if (index === 0) return 0; // 第一个月没有环比
-        return Number(generateRandomRatio().toFixed(2));
-      });
-
-      return {
-        volumeData,
-        ratioData,
-        categories,
-      };
-    };
-
-    const { volumeData, ratioData, categories } = getData();
+    // 获取当前指标的单位
+    const unit = getUnitByTitle(title);
+    const isPercentage = isPercentageIndicator(title);
 
     const option: echarts.EChartsOption = {
       // 迷你图配置
@@ -61,6 +82,19 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
         yAxis: [{ show: false }, { show: false }],
         tooltip: {
           trigger: 'axis',
+          formatter: function (params: any) {
+            let result = `${params[0].axisValue}<br/>`;
+            params.forEach((param: any) => {
+              if (param.seriesName === title) {
+                result += `${param.marker}${param.seriesName}: ${param.value.toLocaleString()}${unit}<br/>`;
+              } else {
+                // 百分比指标的环比显示PP，其他显示%
+                const ratioUnit = isPercentage ? 'PP' : '%';
+                result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}${ratioUnit}<br/>`;
+              }
+            });
+            return result;
+          },
         },
       }),
       // 完整图配置
@@ -78,9 +112,11 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
             let result = `${params[0].axisValue}<br/>`;
             params.forEach((param: any) => {
               if (param.seriesName === title) {
-                result += `${param.marker}${param.seriesName}: ${param.value.toLocaleString()}<br/>`;
+                result += `${param.marker}${param.seriesName}: ${param.value.toLocaleString()}${unit}<br/>`;
               } else {
-                result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}%<br/>`;
+                // 百分比指标的环比显示PP，其他显示%
+                const ratioUnit = isPercentage ? 'PP' : '%';
+                result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}${ratioUnit}<br/>`;
               }
             });
             return result;
@@ -97,7 +133,7 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
         data: categories,
         axisLabel: {
           show: !isMini,
-          rotate: !isMini ? 0 : 0, // 月份标签不需要旋转
+          rotate: 0, // 月份标签不需要旋转
         },
         axisLine: {
           show: !isMini,
@@ -110,19 +146,13 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
         // 左侧Y轴 - 服务量/数值
         {
           type: 'value',
-          name: isMini ? '' : '数值',
+          name: isMini ? '' : unit === '%' ? '百分比' : unit === '时' ? '时长' : '数值',
           position: 'left',
+          scale: true, // 开启自适应范围，不强制从0开始
           axisLabel: {
             show: !isMini,
             formatter: function (value: number) {
-              // 根据指标类型决定单位
-              if (title.includes('率')) {
-                return `${value}%`;
-              } else if (title.includes('量') || title.includes('强度')) {
-                return `${value}`;
-              } else {
-                return `${value}`;
-              }
+              return `${value}${unit}`;
             },
           },
           axisLine: {
@@ -145,7 +175,11 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
           position: 'right',
           axisLabel: {
             show: !isMini,
-            formatter: '{value}%',
+            formatter: function (value: number) {
+              // 百分比指标的环比显示PP，其他显示%
+              const ratioUnit = isPercentage ? 'PP' : '%';
+              return `{value}${ratioUnit}`;
+            },
           },
           axisLine: {
             show: !isMini,
@@ -229,6 +263,7 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
       animationDuration: 1000,
     };
 
+    console.log('ServiceVolumeChart02 - Setting chart option:', option);
     chartInstance.current.setOption(option);
 
     // 响应式处理
@@ -242,7 +277,7 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
       window.removeEventListener('resize', handleResize);
       chartInstance.current?.dispose();
     };
-  }, [isMini, height, title]);
+  }, [isMini, height, title, chartData]);
 
   return (
     <div

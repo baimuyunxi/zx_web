@@ -100,3 +100,43 @@ export const getFarCabinetCt = async (): Promise<IndicatorResponse> => {
   });
   return response.data;
 };
+
+/**
+ * 语音通话利用率
+ */
+export const getVoiceuserate = async (): Promise<IndicatorResponse> => {
+  const response = await httpClient.get('/api/getVoiceuserate', {
+    skipDuplicateCheck: true,
+  });
+  return response.data;
+};
+
+/**
+ * 语音人均月接话量
+ */
+export const getVoicePerCapitaCt = async (): Promise<IndicatorResponse> => {
+  const response = await httpClient.get('/api/getVoicePerCapitaCt', {
+    skipDuplicateCheck: true,
+  });
+  return response.data;
+};
+
+/**
+ * 语音通话强度
+ */
+export const getVoiceCallIntensityCt = async (): Promise<IndicatorResponse> => {
+  const response = await httpClient.get('/api/getVoiceCallIntensityCt', {
+    skipDuplicateCheck: true,
+  });
+  return response.data;
+};
+
+/**
+ * 夜间语音人工接通量降幅
+ */
+export const getVoiceDecreaseCt = async (): Promise<IndicatorResponse> => {
+  const response = await httpClient.get('/api/getVoiceDecreaseCt', {
+    skipDuplicateCheck: true,
+  });
+  return response.data;
+};
