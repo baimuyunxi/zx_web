@@ -155,20 +155,30 @@ const HumanServices = () => {
     if (!data.isDataSynced) {
       return (
         <>
-          <Trend value="--">日环比</Trend>
-          {isVolumeIndicator(indicatorKey) && <Trend value="--">月环比</Trend>}
+          <Trend value="--" indicatorKey={indicatorKey}>
+            日环比
+          </Trend>
+          {isVolumeIndicator(indicatorKey) && (
+            <Trend value="--" indicatorKey={indicatorKey}>
+              月环比
+            </Trend>
+          )}
         </>
       );
     }
 
     return (
       <>
-        <Trend value={isPercentage ? formatPP(data.dayRatio) : formatPercentage(data.dayRatio)}>
+        <Trend
+          value={isPercentage ? formatPP(data.dayRatio) : formatPercentage(data.dayRatio)}
+          indicatorKey={indicatorKey}
+        >
           日环比
         </Trend>
         {isVolumeIndicator(indicatorKey) && (
           <Trend
             value={isPercentage ? formatPP(data.monthRatio) : formatPercentage(data.monthRatio)}
+            indicatorKey={indicatorKey}
           >
             月环比
           </Trend>

@@ -1,0 +1,95 @@
+export const INDICATOR_CONFIGS = {
+  // 接通率类指标（越高越好）
+  conn15Rate: {
+    type: 'rate',
+    direction: 'higher_better',
+    threshold: 85,
+    name: '语音客服15秒接通率',
+  },
+  word5Rate: {
+    type: 'rate',
+    direction: 'higher_better',
+    threshold: 90,
+    name: '文字客服5分钟接通率',
+  },
+  farCabinetRate: {
+    type: 'rate',
+    direction: 'higher_better',
+    threshold: 80,
+    name: '远程柜台25秒接通率',
+  },
+  '10009_15s_rate': {
+    type: 'rate',
+    direction: 'higher_better',
+    threshold: 85,
+    name: '10009号15秒接通率',
+  },
+  artConnRt: {
+    type: 'rate',
+    direction: 'higher_better',
+    threshold: 95,
+    name: '10000号适老化接通率',
+  },
+  onceRate: { type: 'rate', direction: 'higher_better', threshold: 85, name: '10000号人工一解率' },
+
+  // 重复来电率（越低越好）
+  repeatRate: { type: 'rate', direction: 'lower_better', threshold: 5, name: '10000号重复来电率' },
+
+  // 呼入量类指标（保持中性）
+  wanHaoCt: { type: 'volume', direction: 'neutral', name: '万号人工话务总量' },
+  artCallinCt: { type: 'volume', direction: 'neutral', name: '语音人工呼入量' },
+  wordCallinCt: { type: 'volume', direction: 'neutral', name: '文字客服呼入量' },
+  farCabinetCt: { type: 'volume', direction: 'neutral', name: '远程柜台呼入量' },
+} as const;
+
+// 获取指标的reverseColor配置
+export const getIndicatorReverseColor = (indicatorKey: string): boolean => {
+  const config = INDICATOR_CONFIGS[indicatorKey as keyof typeof INDICATOR_CONFIGS];
+
+  if (!config) {
+    return false; // 默认不反转
+  }
+
+  // 对于呼入量类指标，不反转（保持默认行为）
+  if (config.type === 'volume') {
+    return false;
+  }
+
+  // 对于率类指标
+  if (config.type === 'rate') {
+    // 越低越好的指标需要反转颜色（下降为好，上升为坏）
+    return config.direction === 'lower_better';
+  }
+
+  return false;
+};
+
+// 新增：获取指标趋势的好坏判断
+export const getIndicatorTrendGoodness = (
+  indicatorKey: string,
+  numericValue: number,
+): 'good' | 'bad' | 'neutral' => {
+  const config = INDICATOR_CONFIGS[indicatorKey as keyof typeof INDICATOR_CONFIGS];
+
+  if (!config) {
+    return 'neutral'; // 默认中性
+  }
+
+  // 对于呼入量类指标，保持中性
+  if (config.type === 'volume') {
+    return 'neutral';
+  }
+
+  // 对于率类指标
+  if (config.type === 'rate') {
+    if (config.direction === 'higher_better') {
+      // 越高越好的指标：增长为好，下降为坏
+      return numericValue > 0 ? 'good' : 'bad';
+    } else if (config.direction === 'lower_better') {
+      // 越低越好的指标：下降为好，增长为坏
+      return numericValue < 0 ? 'good' : 'bad';
+    }
+  }
+
+  return 'neutral';
+};
