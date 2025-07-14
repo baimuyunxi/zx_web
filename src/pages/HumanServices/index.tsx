@@ -217,7 +217,7 @@ const HumanServices = () => {
     return (
       <>
         <Trend
-          value={isPercentage ? formatPP(data.monthRatio) : formatPercentage(data.monthRatio)}
+          value={isPercentage ? formatPP(data.dayRatio) : formatPercentage(data.dayRatio)}
           indicatorKey={indicatorKey}
         >
           月环比

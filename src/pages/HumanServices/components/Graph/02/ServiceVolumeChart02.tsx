@@ -66,7 +66,7 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
             params.forEach((param: any) => {
               if (param.seriesName === title) {
                 // 根据指标类型显示不同单位
-                const unit = title.includes('率') ? '%' : title.includes('强度') ? '时' : '次';
+                const unit = title.includes('率') ? '%' : title.includes('强度') ? '时' : '%';
                 result += `${param.marker}${param.seriesName}: ${param.value.toLocaleString()}${unit}<br/>`;
               } else {
                 result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}%<br/>`;
@@ -92,7 +92,7 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
             params.forEach((param: any) => {
               if (param.seriesName === title) {
                 // 根据指标类型显示不同单位
-                const unit = title.includes('率') ? '%' : title.includes('强度') ? '时' : '次';
+                const unit = title.includes('率') ? '%' : title.includes('强度') ? '时' : '%';
                 result += `${param.marker}${param.seriesName}: ${param.value.toLocaleString()}${unit}<br/>`;
               } else {
                 result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}%<br/>`;
