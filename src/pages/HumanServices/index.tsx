@@ -19,6 +19,10 @@ import {
   getFarCabinetRate,
   getOnceRate,
   getRepeatRate,
+  getVoiceCallIntensityCt,
+  getVoiceDecreaseCt,
+  getVoicePerCapitaCt,
+  getVoiceuserate,
   getWanHaoCt,
   getWord5Rate,
   getWordCallinCt,
@@ -119,6 +123,7 @@ const HumanServices = () => {
 
   // 组件加载时获取数据
   useEffect(() => {
+    // 日指标数据加载
     loadIndicatorData('wanHaoCt', getWanHaoCt);
     loadIndicatorData('artCallinCt', getArtCallinCt);
     loadIndicatorData('conn15Rate', getConn15Rate);
@@ -129,6 +134,12 @@ const HumanServices = () => {
     loadIndicatorData('farCabinetRate', getFarCabinetRate);
     loadIndicatorData('onceRate', getOnceRate);
     loadIndicatorData('repeatRate', getRepeatRate);
+
+    // 月指标数据加载
+    loadIndicatorData('voiceUseRate', getVoiceuserate);
+    loadIndicatorData('voicePerCapitaCt', getVoicePerCapitaCt);
+    loadIndicatorData('voiceCallinTensityCt', getVoiceCallIntensityCt);
+    loadIndicatorData('voiceDecreaseCt', getVoiceDecreaseCt);
   }, []);
 
   // 渲染数据同步提示
@@ -183,6 +194,34 @@ const HumanServices = () => {
             月环比
           </Trend>
         )}
+      </>
+    );
+  };
+
+  // 渲染月指标Footer（只显示月环比）
+  const renderMonthlyFooter = (
+    data: ProcessedIndicatorData,
+    indicatorKey: string,
+    isPercentage: boolean = false,
+  ) => {
+    if (!data.isDataSynced) {
+      return (
+        <>
+          <Trend value="--" indicatorKey={indicatorKey}>
+            月环比
+          </Trend>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <Trend
+          value={isPercentage ? formatPP(data.monthRatio) : formatPercentage(data.monthRatio)}
+          indicatorKey={indicatorKey}
+        >
+          月环比
+        </Trend>
       </>
     );
   };
@@ -720,8 +759,12 @@ const HumanServices = () => {
             title={
               <>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <Tag color="orange" bordered={false} style={{ fontSize: 12, margin: 0 }}>
-                    6月
+                  <Tag
+                    color={indicatorData.voicePerCapitaCt?.dateColor || '#f50'}
+                    bordered={false}
+                    style={{ fontSize: 12, margin: 0 }}
+                  >
+                    {indicatorData.voicePerCapitaCt?.dateTag || '暂无数据'}
                   </Tag>
                   <span className={styles.titleSpan}>语音人均月接话量</span>
                 </div>
@@ -732,14 +775,27 @@ const HumanServices = () => {
                 <InfoCircleOutlined />
               </Tooltip>
             }
-            total={<StatisticDisplay value={1234} unit="次" threshold="up" />}
-            footer={
-              <>
-                <Trend value="-8%">月环比</Trend>
-              </>
+            total={
+              indicatorData.voicePerCapitaCt?.isDataSynced ? (
+                <StatisticDisplay
+                  value={indicatorData.voicePerCapitaCt.currentValue}
+                  unit="次"
+                  threshold={indicatorData.voicePerCapitaCt.threshold || 'up'}
+                />
+              ) : (
+                renderUnsyncedData()
+              )
             }
+            footer={renderMonthlyFooter(
+              indicatorData.voicePerCapitaCt || ({} as ProcessedIndicatorData),
+              'voicePerCapitaCt',
+            )}
           >
-            {renderChartWithModal02('monthly_calls_per_person', '语音人均月接话量')}
+            {renderChartWithModal02(
+              'monthly_calls_per_person',
+              '语音人均月接话量',
+              indicatorData.voicePerCapitaCt?.chartData,
+            )}
           </ChartCard>
         </Col>
 
@@ -748,8 +804,12 @@ const HumanServices = () => {
             title={
               <>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <Tag color="orange" bordered={false} style={{ fontSize: 12, margin: 0 }}>
-                    6月
+                  <Tag
+                    color={indicatorData.voiceCallinTensityCt?.dateColor || '#f50'}
+                    bordered={false}
+                    style={{ fontSize: 12, margin: 0 }}
+                  >
+                    {indicatorData.voiceCallinTensityCt?.dateTag || '暂无数据'}
                   </Tag>
                   <span className={styles.titleSpan}>语音通话强度</span>
                 </div>
@@ -760,14 +820,27 @@ const HumanServices = () => {
                 <InfoCircleOutlined />
               </Tooltip>
             }
-            total={<StatisticDisplay value={876} unit="时" threshold="up" />}
-            footer={
-              <>
-                <Trend value="-8%">月环比</Trend>
-              </>
+            total={
+              indicatorData.voiceCallinTensityCt?.isDataSynced ? (
+                <StatisticDisplay
+                  value={indicatorData.voiceCallinTensityCt.currentValue}
+                  unit="时"
+                  threshold={indicatorData.voiceCallinTensityCt.threshold || 'up'}
+                />
+              ) : (
+                renderUnsyncedData('时')
+              )
             }
+            footer={renderMonthlyFooter(
+              indicatorData.voiceCallinTensityCt || ({} as ProcessedIndicatorData),
+              'voiceCallinTensityCt',
+            )}
           >
-            {renderChartWithModal02('call_intensity', '语音通话强度')}
+            {renderChartWithModal02(
+              'call_intensity',
+              '语音通话强度',
+              indicatorData.voiceCallinTensityCt?.chartData,
+            )}
           </ChartCard>
         </Col>
 
@@ -776,8 +849,12 @@ const HumanServices = () => {
             title={
               <>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <Tag color="orange" bordered={false} style={{ fontSize: 12, margin: 0 }}>
-                    6月
+                  <Tag
+                    color={indicatorData.voiceDecreaseCt?.dateColor || '#f50'}
+                    bordered={false}
+                    style={{ fontSize: 12, margin: 0 }}
+                  >
+                    {indicatorData.voiceDecreaseCt?.dateTag || '暂无数据'}
                   </Tag>
                   <span className={styles.titleSpan}>夜间语音人工接话量降幅</span>
                 </div>
@@ -788,14 +865,27 @@ const HumanServices = () => {
                 <InfoCircleOutlined />
               </Tooltip>
             }
-            total={<StatisticDisplay value={234} unit="次" />}
-            footer={
-              <>
-                <Trend value="-8%">月环比</Trend>
-              </>
+            total={
+              indicatorData.voiceDecreaseCt?.isDataSynced ? (
+                <StatisticDisplay
+                  value={indicatorData.voiceDecreaseCt.currentValue}
+                  suffix="%"
+                  threshold={indicatorData.voiceDecreaseCt.threshold}
+                />
+              ) : (
+                renderUnsyncedData()
+              )
             }
+            footer={renderMonthlyFooter(
+              indicatorData.voiceDecreaseCt || ({} as ProcessedIndicatorData),
+              'voiceDecreaseCt',
+            )}
           >
-            {renderChartWithModal02('night_decline', '夜间语音人工接话量降幅')}
+            {renderChartWithModal02(
+              'night_decline',
+              '夜间语音人工接话量降幅',
+              indicatorData.voiceDecreaseCt?.chartData,
+            )}
           </ChartCard>
         </Col>
 
@@ -804,8 +894,12 @@ const HumanServices = () => {
             title={
               <>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <Tag color="orange" bordered={false} style={{ fontSize: 12, margin: 0 }}>
-                    6月
+                  <Tag
+                    color={indicatorData.voiceUseRate?.dateColor || '#f50'}
+                    bordered={false}
+                    style={{ fontSize: 12, margin: 0 }}
+                  >
+                    {indicatorData.voiceUseRate?.dateTag || '暂无数据'}
                   </Tag>
                   <span className={styles.titleSpan}>语音通话利用率</span>
                 </div>
@@ -816,14 +910,28 @@ const HumanServices = () => {
                 <InfoCircleOutlined />
               </Tooltip>
             }
-            total={<StatisticDisplay value={91} suffix="%" threshold="up" />}
-            footer={
-              <>
-                <Trend value="-8PP">月环比</Trend>
-              </>
+            total={
+              indicatorData.voiceUseRate?.isDataSynced ? (
+                <StatisticDisplay
+                  value={indicatorData.voiceUseRate.currentValue}
+                  suffix="%"
+                  threshold={indicatorData.voiceUseRate.threshold || 'up'}
+                />
+              ) : (
+                renderUnsyncedPercentageData()
+              )
             }
+            footer={renderMonthlyFooter(
+              indicatorData.voiceUseRate || ({} as ProcessedIndicatorData),
+              'voiceUseRate',
+              true,
+            )}
           >
-            {renderChartWithModal02('call_utilization', '语音通话利用率')}
+            {renderChartWithModal02(
+              'call_utilization',
+              '语音通话利用率',
+              indicatorData.voiceUseRate?.chartData,
+            )}
           </ChartCard>
         </Col>
       </Row>

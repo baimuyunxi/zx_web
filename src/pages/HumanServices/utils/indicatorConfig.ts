@@ -40,6 +40,31 @@ export const INDICATOR_CONFIGS = {
   artCallinCt: { type: 'volume', direction: 'neutral', name: '语音人工呼入量' },
   wordCallinCt: { type: 'volume', direction: 'neutral', name: '文字客服呼入量' },
   farCabinetCt: { type: 'volume', direction: 'neutral', name: '远程柜台呼入量' },
+
+  // 月指标（新增）
+  voiceUseRate: {
+    type: 'rate',
+    direction: 'higher_better',
+    threshold: 73.8,
+    name: '语音通话利用率',
+  },
+  voicePerCapitaCt: {
+    type: 'volume',
+    direction: 'higher_better',
+    threshold: 2632,
+    name: '语音人均月接话量',
+  },
+  voiceCallinTensityCt: {
+    type: 'volume',
+    direction: 'higher_better',
+    threshold: 133,
+    name: '语音通话强度',
+  },
+  voiceDecreaseCt: {
+    type: 'volume',
+    direction: 'neutral',
+    name: '夜间语音人工接通量降幅',
+  },
 } as const;
 
 // 获取指标的reverseColor配置
@@ -51,7 +76,7 @@ export const getIndicatorReverseColor = (indicatorKey: string): boolean => {
   }
 
   // 对于呼入量类指标，不反转（保持默认行为）
-  if (config.type === 'volume') {
+  if (config.type === 'volume' && config.direction === 'neutral') {
     return false;
   }
 
@@ -75,20 +100,18 @@ export const getIndicatorTrendGoodness = (
     return 'neutral'; // 默认中性
   }
 
-  // 对于呼入量类指标，保持中性
-  if (config.type === 'volume') {
+  // 对于中性方向的指标，保持中性
+  if (config.direction === 'neutral') {
     return 'neutral';
   }
 
-  // 对于率类指标
-  if (config.type === 'rate') {
-    if (config.direction === 'higher_better') {
-      // 越高越好的指标：增长为好，下降为坏
-      return numericValue > 0 ? 'good' : 'bad';
-    } else if (config.direction === 'lower_better') {
-      // 越低越好的指标：下降为好，增长为坏
-      return numericValue < 0 ? 'good' : 'bad';
-    }
+  // 对于有明确方向偏好的指标
+  if (config.direction === 'higher_better') {
+    // 越高越好的指标：增长为好，下降为坏
+    return numericValue > 0 ? 'good' : 'bad';
+  } else if (config.direction === 'lower_better') {
+    // 越低越好的指标：下降为好，增长为坏
+    return numericValue < 0 ? 'good' : 'bad';
   }
 
   return 'neutral';

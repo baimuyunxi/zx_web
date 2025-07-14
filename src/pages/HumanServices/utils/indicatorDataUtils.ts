@@ -119,6 +119,12 @@ const processDateTag = (maxPDayId: string): { dateTag: string; dateColor: string
     return { dateTag: '暂无数据', dateColor: '#f50' };
   }
 
+  // 判断是月份格式还是日期格式
+  if (maxPDayId.length === 6 && maxPDayId.endsWith('月')) {
+    // 如果是"6月"这种格式，直接返回
+    return { dateTag: maxPDayId, dateColor: 'orange' };
+  }
+
   // 获取昨天的日期
   const yesterday = moment().subtract(1, 'day');
   const yesterdayFormatted = yesterday.format('M月D日');
@@ -217,7 +223,7 @@ export const reprocessChartDataByPeriod = (
 
 /**
  * 格式化日期用于图表显示
- * @param PDayId 日期ID (yyyyMMdd格式)
+ * @param PDayId 日期ID (yyyyMMdd格式或yyyyMM格式)
  * @returns 格式化后的日期字符串
  */
 const formatDateForChart = (PDayId: string): string => {
@@ -228,27 +234,53 @@ const formatDateForChart = (PDayId: string): string => {
     return '';
   }
 
-  if (PDayId.length !== 8) {
-    console.log('formatDateForChart - Invalid PDayId length:', PDayId.length, 'returning as-is');
-    return PDayId;
+  // 处理6位的yyyyMM格式（月指标）
+  if (PDayId.length === 6) {
+    console.log('formatDateForChart - Processing 6-digit month format:', PDayId);
+    try {
+      const year = PDayId.substring(0, 4);
+      const month = PDayId.substring(4, 6);
+
+      // 去掉前导零
+      const monthInt = parseInt(month, 10);
+
+      const result = `${monthInt}月`;
+      console.log('formatDateForChart - Month formatted result:', { PDayId, result });
+      return result;
+    } catch (error) {
+      console.error('formatDateForChart - Error formatting month:', error, 'PDayId:', PDayId);
+      return PDayId;
+    }
   }
 
-  try {
-    const year = PDayId.substring(0, 4);
-    const month = PDayId.substring(4, 6);
-    const day = PDayId.substring(6, 8);
+  // 处理8位的yyyyMMdd格式（日指标）
+  if (PDayId.length === 8) {
+    console.log('formatDateForChart - Processing 8-digit date format:', PDayId);
+    try {
+      const year = PDayId.substring(0, 4);
+      const month = PDayId.substring(4, 6);
+      const day = PDayId.substring(6, 8);
 
-    // 去掉前导零
-    const monthInt = parseInt(month, 10);
-    const dayInt = parseInt(day, 10);
+      // 去掉前导零
+      const monthInt = parseInt(month, 10);
+      const dayInt = parseInt(day, 10);
 
-    const result = `${monthInt}月${dayInt}日`;
-    console.log('formatDateForChart - Formatted result:', { PDayId, result });
-    return result;
-  } catch (error) {
-    console.error('formatDateForChart - Error formatting:', error, 'PDayId:', PDayId);
-    return PDayId;
+      const result = `${monthInt}月${dayInt}日`;
+      console.log('formatDateForChart - Date formatted result:', { PDayId, result });
+      return result;
+    } catch (error) {
+      console.error('formatDateForChart - Error formatting date:', error, 'PDayId:', PDayId);
+      return PDayId;
+    }
   }
+
+  // 未知格式，直接返回
+  console.log(
+    'formatDateForChart - Unknown PDayId format, length:',
+    PDayId.length,
+    'returning as-is',
+  );
+  return PDayId;
 };
 
 /**
