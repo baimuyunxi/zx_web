@@ -879,6 +879,7 @@ const HumanServices = () => {
             footer={renderMonthlyFooter(
               indicatorData.voiceDecreaseCt || ({} as ProcessedIndicatorData),
               'voiceDecreaseCt',
+              true,
             )}
           >
             {renderChartWithModal02(

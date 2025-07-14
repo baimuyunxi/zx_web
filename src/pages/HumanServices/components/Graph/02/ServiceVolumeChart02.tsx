@@ -23,6 +23,23 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts>();
 
+  // 根据指标标题获取对应的单位
+  const getUnitByTitle = (title: string): string => {
+    if (title.includes('利用率') || title.includes('降幅')) {
+      return '%';
+    } else if (title.includes('强度')) {
+      return '时';
+    } else if (title.includes('接话量')) {
+      return '次';
+    }
+    return '次'; // 默认单位
+  };
+
+  // 判断是否为百分比类指标（环比应显示PP）
+  const isPercentageIndicator = (title: string): boolean => {
+    return title.includes('利用率') || title.includes('降幅');
+  };
+
   useEffect(() => {
     if (!chartRef.current) return;
 
@@ -46,6 +63,10 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
     const { volumeData, ratioData, categories } = chartData;
     console.log('ServiceVolumeChart02 - Using data:', { volumeData, ratioData, categories });
 
+    // 获取当前指标的单位
+    const unit = getUnitByTitle(title);
+    const isPercentage = isPercentageIndicator(title);
+
     const option: echarts.EChartsOption = {
       // 迷你图配置
       ...(isMini && {
@@ -65,11 +86,11 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
             let result = `${params[0].axisValue}<br/>`;
             params.forEach((param: any) => {
               if (param.seriesName === title) {
-                // 根据指标类型显示不同单位
-                const unit = title.includes('率') ? '%' : title.includes('强度') ? '时' : '%';
                 result += `${param.marker}${param.seriesName}: ${param.value.toLocaleString()}${unit}<br/>`;
               } else {
-                result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}%<br/>`;
+                // 百分比指标的环比显示PP，其他显示%
+                const ratioUnit = isPercentage ? 'PP' : '%';
+                result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}${ratioUnit}<br/>`;
               }
             });
             return result;
@@ -91,11 +112,11 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
             let result = `${params[0].axisValue}<br/>`;
             params.forEach((param: any) => {
               if (param.seriesName === title) {
-                // 根据指标类型显示不同单位
-                const unit = title.includes('率') ? '%' : title.includes('强度') ? '时' : '%';
                 result += `${param.marker}${param.seriesName}: ${param.value.toLocaleString()}${unit}<br/>`;
               } else {
-                result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}%<br/>`;
+                // 百分比指标的环比显示PP，其他显示%
+                const ratioUnit = isPercentage ? 'PP' : '%';
+                result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}${ratioUnit}<br/>`;
               }
             });
             return result;
@@ -125,26 +146,13 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
         // 左侧Y轴 - 服务量/数值
         {
           type: 'value',
-          name: isMini
-            ? ''
-            : title.includes('率')
-              ? '百分比'
-              : title.includes('强度')
-                ? '时长'
-                : '数值',
+          name: isMini ? '' : unit === '%' ? '百分比' : unit === '时' ? '时长' : '数值',
           position: 'left',
           scale: true, // 开启自适应范围，不强制从0开始
           axisLabel: {
             show: !isMini,
             formatter: function (value: number) {
-              // 根据指标类型决定单位
-              if (title.includes('率')) {
-                return `${value}%`;
-              } else if (title.includes('强度')) {
-                return `${value}时`;
-              } else {
-                return `${value}次`;
-              }
+              return `${value}${unit}`;
             },
           },
           axisLine: {
@@ -167,7 +175,11 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
           position: 'right',
           axisLabel: {
             show: !isMini,
-            formatter: '{value}%',
+            formatter: function (value: number) {
+              // 百分比指标的环比显示PP，其他显示%
+              const ratioUnit = isPercentage ? 'PP' : '%';
+              return `{value}${ratioUnit}`;
+            },
           },
           axisLine: {
             show: !isMini,
