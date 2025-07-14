@@ -36,15 +36,15 @@ export const INDICATOR_CONFIGS = {
   repeatRate: { type: 'rate', direction: 'lower_better', threshold: 5, name: '10000号重复来电率' },
 
   // 呼入量类指标（保持中性）
-  wanHaoCt: { type: 'volume', direction: 'neutral', name: '万号人工话务总量' },
-  artCallinCt: { type: 'volume', direction: 'neutral', name: '语音人工呼入量' },
+  wanHaoCt: { type: 'volume', direction: 'lower_better', name: '万号人工话务总量' },
+  artCallinCt: { type: 'volume', direction: 'lower_better', name: '语音人工呼入量' },
   wordCallinCt: { type: 'volume', direction: 'neutral', name: '文字客服呼入量' },
   farCabinetCt: { type: 'volume', direction: 'neutral', name: '远程柜台呼入量' },
 
   // 月指标（新增）
   voiceUseRate: {
     type: 'rate',
-    direction: 'lower_better', // 修改：下降为好的趋势（绿色）
+    direction: 'higher_better', // 修改：下降为好的趋势（绿色）
     threshold: 73.8,
     name: '语音通话利用率',
   },
@@ -62,7 +62,7 @@ export const INDICATOR_CONFIGS = {
   },
   voiceDecreaseCt: {
     type: 'volume',
-    direction: 'neutral',
+    direction: 'lower_better',
     name: '夜间语音人工接通量降幅',
   },
 } as const;
