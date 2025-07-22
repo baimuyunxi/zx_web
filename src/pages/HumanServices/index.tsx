@@ -1,10 +1,9 @@
 import { PageContainer } from '@ant-design/pro-components';
 import React, { useEffect, useState } from 'react';
-import { Col, Divider, Row, Space, StatisticProps, Tag, Tooltip } from 'antd';
+import { Col, Divider, Row, Space, Tag, Tooltip } from 'antd';
 import ChartCard from '@/pages/components/Charts/ChartCard';
 import Trend from '../components/Trend';
 import useStyles from '@/pages/HumanServices/style.style';
-import CountUp from 'react-countup';
 import StatisticDisplay from '@/pages/components/StatisticDisplay';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useChartModal01 } from '@/pages/HumanServices/components/Graph/01/utils/useChartModal01';
@@ -48,20 +47,13 @@ const topColProps = {
   },
 };
 
-const formatter: StatisticProps['formatter'] = (value) => {
-  const numValue = value as number;
-  const decimalPlaces = (numValue.toString().split('.')[1] || '').length;
-
-  return <CountUp end={numValue} separator={','} decimals={decimalPlaces} decimal="." />;
-};
-
 const HumanServices = () => {
   const { styles } = useStyles();
 
   // 状态管理
   const [indicatorData, setIndicatorData] = useState<Record<string, ProcessedIndicatorData>>({});
   const [originalData, setOriginalData] = useState<Record<string, IndicatorData[]>>({});
-  const [loading, setLoading] = useState<Record<string, boolean>>({});
+  const [, setLoading] = useState<Record<string, boolean>>({});
 
   /**
    * 日指标状态管理

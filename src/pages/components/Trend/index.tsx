@@ -2,7 +2,7 @@ import React from 'react';
 import { FallOutlined, RiseOutlined } from '@ant-design/icons';
 import classNames from 'classnames';
 import useStyles from './index.style';
-import { getIndicatorTrendGoodness } from '@/pages/HumanServices/utils/indicatorConfig';
+import { getIndicatorTrendGoodness } from '@/pages/SmartServices/utils/indicatorConfig';
 
 export type TrendProps = {
   style?: React.CSSProperties;
