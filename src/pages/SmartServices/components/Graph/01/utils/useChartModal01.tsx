@@ -20,12 +20,6 @@ export interface ModalStates {
   [key: string]: ModalState;
 }
 
-// 图表配置类型
-export interface ChartConfig {
-  key: string;
-  title: string;
-}
-
 /**
  * 图表模态框状态管理 Hook
  * 专注于日指标的状态管理，支持周期切换和图表数据传递
@@ -144,26 +138,4 @@ export const useChartModal01 = () => {
     // 调试用（保留兼容性）
     modalStates,
   };
-};
-
-// 预定义的日指标图表配置
-export const chartConfigs = {
-  dailyMetrics: [
-    { key: 'intelLigentCus', title: '智能语音客服占比' },
-    { key: 'intelLigentrgRate', title: '智能客服转人工率' },
-    { key: 'onlineCustRate', title: '在线客服比' },
-    { key: 'intelLsoluRate', title: '智能客服来话一解率' },
-    { key: 'seifServiceRate', title: '语音自助话务占比' },
-  ],
-} as const;
-
-// 工具函数：从配置中提取所有的 keys
-export const getAllChartKeys = (): string[] => {
-  return chartConfigs.dailyMetrics.map((config) => config.key);
-};
-
-// 工具函数：根据 key 查找标题
-export const getChartTitleByKey = (key: string): string => {
-  const config = chartConfigs.dailyMetrics.find((config) => config.key === key);
-  return config?.title || key;
 };

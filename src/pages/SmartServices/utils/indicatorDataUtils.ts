@@ -279,25 +279,6 @@ const formatDateForChart = (PDayId: string): string => {
     return '';
   }
 
-  // 处理6位的yyyyMM格式（月指标）
-  if (PDayId.length === 6) {
-    console.log('formatDateForChart - Processing 6-digit month format:', PDayId);
-    try {
-      const year = PDayId.substring(0, 4);
-      const month = PDayId.substring(4, 6);
-
-      // 去掉前导零
-      const monthInt = parseInt(month, 10);
-
-      const result = `${monthInt}月`;
-      console.log('formatDateForChart - Month formatted result:', { PDayId, result });
-      return result;
-    } catch (error) {
-      console.error('formatDateForChart - Error formatting month:', error, 'PDayId:', PDayId);
-      return PDayId;
-    }
-  }
-
   // 处理8位的yyyyMMdd格式（日指标）
   if (PDayId.length === 8) {
     console.log('formatDateForChart - Processing 8-digit date format:', PDayId);
@@ -326,19 +307,6 @@ const formatDateForChart = (PDayId: string): string => {
     'returning as-is',
   );
   return PDayId;
-};
-
-/**
- * 格式化数值显示
- * @param value 数值
- * @param unit 单位
- * @returns 格式化后的字符串
- */
-export const formatValue = (value: number, unit: string): string => {
-  if (value >= 10000) {
-    return `${(value / 10000).toFixed(1)}万${unit}`;
-  }
-  return `${value}${unit}`;
 };
 
 /**

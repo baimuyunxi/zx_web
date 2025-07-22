@@ -186,7 +186,7 @@ const Smart: React.FC = () => {
             )}
           >
             {renderChartWithModal01(
-              'voice_calls',
+              'seifServiceRate',
               '语音自助话务占比',
               indicatorData.seifServiceRate?.chartData,
               originalData.seifServiceRate,
@@ -233,7 +233,7 @@ const Smart: React.FC = () => {
             )}
           >
             {renderChartWithModal01(
-              'voice_calls',
+              'intelLigentCusv',
               '智能语音客服占比',
               indicatorData.intelLigentCus?.chartData,
               originalData.intelLigentCus,
@@ -280,7 +280,7 @@ const Smart: React.FC = () => {
             )}
           >
             {renderChartWithModal01(
-              'voice_calls',
+              'intelLigentrgRate',
               '智能客服转人工率',
               indicatorData.intelLigentrgRate?.chartData,
               originalData.intelLigentrgRate,
@@ -327,7 +327,7 @@ const Smart: React.FC = () => {
             )}
           >
             {renderChartWithModal01(
-              'voice_15s_rate',
+              'intelLsoluRate',
               '智能客服来话一解率',
               indicatorData.intelLsoluRate?.chartData,
               originalData.intelLsoluRate,
@@ -376,7 +376,7 @@ const Smart: React.FC = () => {
             )}
           >
             {renderChartWithModal01(
-              'text_service',
+              'onlineCustRate',
               '在线客服比',
               indicatorData.onlineCustRate?.chartData,
               originalData.onlineCustRate,
