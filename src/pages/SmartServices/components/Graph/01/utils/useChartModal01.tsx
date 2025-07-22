@@ -149,17 +149,11 @@ export const useChartModal01 = () => {
 // 预定义的日指标图表配置
 export const chartConfigs = {
   dailyMetrics: [
-    { key: 'total_volume', title: '万号人工话务总量' },
-    { key: 'voice_calls', title: '语音人工呼入量' },
-    { key: 'text_service', title: '文字客服呼入量' },
-    { key: 'remote_counter', title: '远程柜台呼入量' },
-    { key: 'voice_15s_rate', title: '语音客服15秒接通率' },
-    { key: 'text_5min_rate', title: '文字客服5分钟接通率' },
-    { key: 'remote_25s_rate', title: '远程柜台25秒接通率' },
-    { key: '10009_15s_rate', title: '10009号15秒接通率' },
-    { key: 'senior_rate', title: '10000号适老化接通率' },
-    { key: 'first_solution_rate', title: '10000号人工一解率' },
-    { key: 'repeat_call_rate', title: '10000号重复来电率' },
+    { key: 'intelLigentCus', title: '智能语音客服占比' },
+    { key: 'intelLigentrgRate', title: '智能客服转人工率' },
+    { key: 'onlineCustRate', title: '在线客服比' },
+    { key: 'intelLsoluRate', title: '智能客服来话一解率' },
+    { key: 'seifServiceRate', title: '语音自助话务占比' },
   ],
 } as const;
 

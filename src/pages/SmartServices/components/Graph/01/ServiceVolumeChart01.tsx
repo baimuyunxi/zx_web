@@ -67,11 +67,11 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
             let result = `${params[0].axisValue}<br/>`;
             params.forEach((param: any) => {
               if (param.seriesName === title) {
-                // 根据指标类型显示不同单位
-                const unit = title.includes('率') ? '%' : '次';
-                result += `${param.marker}${param.seriesName}: ${param.value.toLocaleString()}${unit}<br/>`;
+                // 主指标统一使用%
+                result += `${param.marker}${param.seriesName}: ${param.value.toLocaleString()}%<br/>`;
               } else {
-                result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}%<br/>`;
+                // 环比增长率使用pp作为单位
+                result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}pp<br/>`;
               }
             });
             return result;
@@ -93,11 +93,11 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
             let result = `${params[0].axisValue}<br/>`;
             params.forEach((param: any) => {
               if (param.seriesName === title) {
-                // 根据指标类型显示不同单位
-                const unit = title.includes('率') ? '%' : '次';
-                result += `${param.marker}${param.seriesName}: ${param.value.toLocaleString()}${unit}<br/>`;
+                // 主指标统一使用%
+                result += `${param.marker}${param.seriesName}: ${param.value.toLocaleString()}%<br/>`;
               } else {
-                result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}%<br/>`;
+                // 环比增长率使用pp作为单位
+                result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}pp<br/>`;
               }
             });
             return result;
@@ -127,19 +127,15 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
         // 左侧Y轴 - 服务量/指标值
         {
           type: 'value',
-          name: isMini ? '' : title.includes('率') ? '百分比' : '服务量',
+          name: isMini ? '' : '主指标',
           position: 'left',
           scale: true, // 开启自适应范围，不强制从0开始
           // min: title.includes('率') ? 50 : 'dataMin', // 百分比类型默认从50%开始，其他类型自适应
           axisLabel: {
             show: !isMini,
             formatter: function (value: number) {
-              // 根据指标类型决定单位
-              if (title.includes('率')) {
-                return `${value}%`;
-              } else {
-                return `${value}次`;
-              }
+              // 主指标统一使用%
+              return `${value}%`;
             },
           },
           axisLine: {
@@ -162,7 +158,8 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
           position: 'right',
           axisLabel: {
             show: !isMini,
-            formatter: '{value}%',
+            // 环比增长率轴标签使用pp单位
+            formatter: '{value}pp',
           },
           axisLine: {
             show: !isMini,
@@ -225,7 +222,7 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
           },
           symbol: isMini ? 'none' : 'diamond',
           symbolSize: isMini ? 0 : 8,
-          // 添加标记线显示0%基准线
+          // 添加标记线显示0基准线
           markLine: {
             silent: true,
             data: [

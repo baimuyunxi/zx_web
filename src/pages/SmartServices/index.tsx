@@ -1,5 +1,5 @@
 import { PageContainer } from '@ant-design/pro-components';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Col, Divider, Row, Space, Tag, Tooltip } from 'antd';
 import ChartCard from '@/pages/components/Charts/ChartCard';
 import { InfoCircleOutlined } from '@ant-design/icons';
@@ -8,12 +8,21 @@ import {
   formatPercentage,
   formatPP,
   IndicatorData,
+  IndicatorResponse,
   ProcessedIndicatorData,
+  processIndicatorData,
 } from '@/pages/SmartServices/utils/indicatorDataUtils';
 import useStyles from '@/pages/SmartServices/style.style';
 import { useChartModal01 } from '@/pages/SmartServices/components/Graph/01/utils/useChartModal01';
 import { createChartRenderer01 } from '@/pages/SmartServices/components/Graph/01/utils/chartCardUtils01';
 import Trend from '../components/Trend';
+import {
+  getIntellSoluRate,
+  getLigentCus,
+  getLigentrgRate,
+  getOnlineCustRate,
+  getSeifServiceRate,
+} from '@/pages/SmartServices/service';
 
 const topColProps = {
   xs: 24,
@@ -46,10 +55,51 @@ const Smart: React.FC = () => {
     handlePeriodChange01,
   );
 
-  // 渲染数据同步提示
-  const renderUnsyncedData = (unit: string = '次') => (
-    <StatisticDisplay value={0} unit={unit} monthLabel="数据暂未同步" monthValue="--" />
-  );
+  // 加载指标数据
+  const loadIndicatorData = async (key: string, apiCall: () => Promise<IndicatorResponse>) => {
+    setLoading((prev) => ({ ...prev, [key]: true }));
+    try {
+      const response = await apiCall();
+      console.log(`${key} API Response:`, response);
+
+      // 存储原始数据
+      setOriginalData((prev) => ({ ...prev, [key]: response.data || [] }));
+
+      // 处理数据
+      const processedData = processIndicatorData(response);
+      console.log(`${key} Processed Data:`, processedData);
+      setIndicatorData((prev) => ({ ...prev, [key]: processedData }));
+    } catch (error) {
+      console.error(`加载${key}数据失败:`, error);
+      // 设置默认数据
+      setIndicatorData((prev) => ({
+        ...prev,
+        [key]: {
+          currentValue: 0,
+          monthValue: 0,
+          dayRatio: 0,
+          monthRatio: 0,
+          dateTag: '暂无数据',
+          dateColor: '#f50',
+          chartData: { volumeData: [], ratioData: [], categories: [] },
+          isDataSynced: false,
+        },
+      }));
+      setOriginalData((prev) => ({ ...prev, [key]: [] }));
+    } finally {
+      setLoading((prev) => ({ ...prev, [key]: false }));
+    }
+  };
+
+  // 组件加载时获取数据
+  useEffect(() => {
+    // 日指标数据加载
+    loadIndicatorData('intelLigentCus', getLigentCus);
+    loadIndicatorData('intelLigentrgRate', getLigentrgRate);
+    loadIndicatorData('onlineCustRate', getOnlineCustRate);
+    loadIndicatorData('intelLsoluRate', getIntellSoluRate);
+    loadIndicatorData('seifServiceRate', getSeifServiceRate);
+  }, []);
 
   // 渲染数据同步提示（百分比类型）
   const renderUnsyncedPercentageData = () => (
@@ -103,11 +153,11 @@ const Smart: React.FC = () => {
               <>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <Tag
-                    color={indicatorData.artConnRt?.dateColor || '#f50'}
+                    color={indicatorData.seifServiceRate?.dateColor || '#f50'}
                     bordered={false}
                     style={{ fontSize: 12, margin: 0 }}
                   >
-                    {indicatorData.artConnRt?.dateTag || '暂无数据'}
+                    {indicatorData.seifServiceRate?.dateTag || '暂无数据'}
                   </Tag>
                   <span className={styles.titleSpan}>语音自助话务占比</span>
                 </div>
@@ -119,27 +169,27 @@ const Smart: React.FC = () => {
               </Tooltip>
             }
             total={
-              indicatorData.artConnRt?.isDataSynced ? (
+              indicatorData.seifServiceRate?.isDataSynced ? (
                 <StatisticDisplay
-                  value={indicatorData.artConnRt.currentValue}
+                  value={indicatorData.seifServiceRate.currentValue}
                   unit="%"
-                  threshold={indicatorData.artConnRt.threshold || 'up'}
+                  threshold={indicatorData.seifServiceRate.threshold || 'up'}
                 />
               ) : (
                 renderUnsyncedPercentageData()
               )
             }
             footer={renderFooter(
-              indicatorData.artConnRt || ({} as ProcessedIndicatorData),
-              'artConnRt',
+              indicatorData.seifServiceRate || ({} as ProcessedIndicatorData),
+              'seifServiceRate',
               true,
             )}
           >
             {renderChartWithModal01(
-              'senior_rate',
+              'voice_calls',
               '语音自助话务占比',
-              indicatorData.artConnRt?.chartData,
-              originalData.artConnRt,
+              indicatorData.seifServiceRate?.chartData,
+              originalData.seifServiceRate,
             )}
           </ChartCard>
         </Col>
@@ -150,11 +200,11 @@ const Smart: React.FC = () => {
               <>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <Tag
-                    color={indicatorData.wanHaoCt?.dateColor || '#f50'}
+                    color={indicatorData.intelLigentCus?.dateColor || '#f50'}
                     bordered={false}
                     style={{ fontSize: 12, margin: 0 }}
                   >
-                    {indicatorData.wanHaoCt?.dateTag || '暂无数据'}
+                    {indicatorData.intelLigentCus?.dateTag || '暂无数据'}
                   </Tag>
                   <span className={styles.titleSpan}>智能语音客服占比</span>
                 </div>
@@ -166,26 +216,27 @@ const Smart: React.FC = () => {
               </Tooltip>
             }
             total={
-              indicatorData.artConnRt?.isDataSynced ? (
+              indicatorData.intelLigentCus?.isDataSynced ? (
                 <StatisticDisplay
-                  value={indicatorData.artConnRt.currentValue}
+                  value={indicatorData.intelLigentCus.currentValue}
                   unit="%"
-                  threshold={indicatorData.artConnRt.threshold || 'up'}
+                  threshold={indicatorData.intelLigentCus.threshold || 'up'}
                 />
               ) : (
                 renderUnsyncedPercentageData()
               )
             }
             footer={renderFooter(
-              indicatorData.wanHaoCt || ({} as ProcessedIndicatorData),
-              'wanHaoCt',
+              indicatorData.intelLigentCus || ({} as ProcessedIndicatorData),
+              'intelLigentCusv',
+              true,
             )}
           >
             {renderChartWithModal01(
-              'total_volume',
+              'voice_calls',
               '智能语音客服占比',
-              indicatorData.wanHaoCt?.chartData,
-              originalData.wanHaoCt,
+              indicatorData.intelLigentCus?.chartData,
+              originalData.intelLigentCus,
             )}
           </ChartCard>
         </Col>
@@ -196,11 +247,11 @@ const Smart: React.FC = () => {
               <>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <Tag
-                    color={indicatorData.artCallinCt?.dateColor || '#f50'}
+                    color={indicatorData.intelLigentrgRate?.dateColor || '#f50'}
                     bordered={false}
                     style={{ fontSize: 12, margin: 0 }}
                   >
-                    {indicatorData.artCallinCt?.dateTag || '暂无数据'}
+                    {indicatorData.intelLigentrgRate?.dateTag || '暂无数据'}
                   </Tag>
                   <span className={styles.titleSpan}>智能客服转人工率</span>
                 </div>
@@ -212,26 +263,27 @@ const Smart: React.FC = () => {
               </Tooltip>
             }
             total={
-              indicatorData.artConnRt?.isDataSynced ? (
+              indicatorData.intelLigentrgRate?.isDataSynced ? (
                 <StatisticDisplay
-                  value={indicatorData.artConnRt.currentValue}
+                  value={indicatorData.intelLigentrgRate.currentValue}
                   unit="%"
-                  threshold={indicatorData.artConnRt.threshold || 'up'}
+                  threshold={indicatorData.intelLigentrgRate.threshold || 'up'}
                 />
               ) : (
                 renderUnsyncedPercentageData()
               )
             }
             footer={renderFooter(
-              indicatorData.artCallinCt || ({} as ProcessedIndicatorData),
-              'artCallinCt',
+              indicatorData.intelLigentrgRate || ({} as ProcessedIndicatorData),
+              'intelLigentrgRate',
+              true,
             )}
           >
             {renderChartWithModal01(
               'voice_calls',
               '智能客服转人工率',
-              indicatorData.artCallinCt?.chartData,
-              originalData.artCallinCt,
+              indicatorData.intelLigentrgRate?.chartData,
+              originalData.intelLigentrgRate,
             )}
           </ChartCard>
         </Col>
@@ -242,11 +294,11 @@ const Smart: React.FC = () => {
               <>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <Tag
-                    color={indicatorData.conn15Rate?.dateColor || '#f50'}
+                    color={indicatorData.intelLsoluRate?.dateColor || '#f50'}
                     bordered={false}
                     style={{ fontSize: 12, margin: 0 }}
                   >
-                    {indicatorData.conn15Rate?.dateTag || '暂无数据'}
+                    {indicatorData.intelLsoluRate?.dateTag || '暂无数据'}
                   </Tag>
                   <span className={styles.titleSpan}>智能客服来话一解率</span>
                 </div>
@@ -258,27 +310,27 @@ const Smart: React.FC = () => {
               </Tooltip>
             }
             total={
-              indicatorData.conn15Rate?.isDataSynced ? (
+              indicatorData.intelLsoluRate?.isDataSynced ? (
                 <StatisticDisplay
-                  value={indicatorData.conn15Rate.currentValue}
+                  value={indicatorData.intelLsoluRate.currentValue}
                   unit="%"
-                  threshold={indicatorData.conn15Rate.threshold || 'up'}
+                  threshold={indicatorData.intelLsoluRate.threshold || 'up'}
                 />
               ) : (
                 renderUnsyncedPercentageData()
               )
             }
             footer={renderFooter(
-              indicatorData.conn15Rate || ({} as ProcessedIndicatorData),
-              'conn15Rate',
+              indicatorData.intelLsoluRate || ({} as ProcessedIndicatorData),
+              'intelLsoluRate',
               true,
             )}
           >
             {renderChartWithModal01(
               'voice_15s_rate',
               '智能客服来话一解率',
-              indicatorData.conn15Rate?.chartData,
-              originalData.conn15Rate,
+              indicatorData.intelLsoluRate?.chartData,
+              originalData.intelLsoluRate,
             )}
           </ChartCard>
         </Col>
@@ -291,11 +343,11 @@ const Smart: React.FC = () => {
               <>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <Tag
-                    color={indicatorData.wordCallinCt?.dateColor || '#f50'}
+                    color={indicatorData.onlineCustRate?.dateColor || '#f50'}
                     bordered={false}
                     style={{ fontSize: 12, margin: 0 }}
                   >
-                    {indicatorData.wordCallinCt?.dateTag || '暂无数据'}
+                    {indicatorData.onlineCustRate?.dateTag || '暂无数据'}
                   </Tag>
                   <span className={styles.titleSpan}>在线客服比</span>
                 </div>
@@ -307,26 +359,27 @@ const Smart: React.FC = () => {
               </Tooltip>
             }
             total={
-              indicatorData.artConnRt?.isDataSynced ? (
+              indicatorData.onlineCustRate?.isDataSynced ? (
                 <StatisticDisplay
-                  value={indicatorData.artConnRt.currentValue}
+                  value={indicatorData.onlineCustRate.currentValue}
                   unit="%"
-                  threshold={indicatorData.artConnRt.threshold || 'up'}
+                  threshold={indicatorData.onlineCustRate.threshold || 'up'}
                 />
               ) : (
                 renderUnsyncedPercentageData()
               )
             }
             footer={renderFooter(
-              indicatorData.wordCallinCt || ({} as ProcessedIndicatorData),
-              'wordCallinCt',
+              indicatorData.onlineCustRate || ({} as ProcessedIndicatorData),
+              'onlineCustRate',
+              true,
             )}
           >
             {renderChartWithModal01(
               'text_service',
               '在线客服比',
-              indicatorData.wordCallinCt?.chartData,
-              originalData.wordCallinCt,
+              indicatorData.onlineCustRate?.chartData,
+              originalData.onlineCustRate,
             )}
           </ChartCard>
         </Col>

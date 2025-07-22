@@ -215,17 +215,11 @@ export const ChartWithModal: React.FC<ChartWithModalProps> = ({
  * 日指标图表配置常量
  */
 export const DAILY_CHART_CONFIGS = {
-  TOTAL_VOLUME: { key: 'total_volume', title: '万号人工话务总量' },
-  VOICE_CALLS: { key: 'voice_calls', title: '语音人工呼入量' },
-  TEXT_SERVICE: { key: 'text_service', title: '文字客服呼入量' },
-  REMOTE_COUNTER: { key: 'remote_counter', title: '远程柜台呼入量' },
-  VOICE_15S_RATE: { key: 'voice_15s_rate', title: '语音客服15秒接通率' },
-  TEXT_5MIN_RATE: { key: 'text_5min_rate', title: '文字客服5分钟接通率' },
-  REMOTE_25S_RATE: { key: 'remote_25s_rate', title: '远程柜台25秒接通率' },
-  SERVICE_10009_15S_RATE: { key: '10009_15s_rate', title: '10009号15秒接通率' },
-  SENIOR_RATE: { key: 'senior_rate', title: '10000号适老化接通率' },
-  FIRST_SOLUTION_RATE: { key: 'first_solution_rate', title: '10000号人工一解率' },
-  REPEAT_CALL_RATE: { key: 'repeat_call_rate', title: '10000号重复来电率' },
+  INTEL_LIGRNT_CUS: { key: 'intelLigentCus', title: '智能语音客服占比' },
+  INTEL_LIGRNTRG_RATE: { key: 'intelLigentrgRate', title: '智能客服转人工率' },
+  ONLINE_CUST_RATE: { key: 'onlineCustRate', title: '在线客服比（省内口径）' },
+  INTEL_LSOLU_RATE: { key: 'intelLsoluRate', title: '智能客服来话一解率' },
+  VOICE_15S_RATE: { key: 'seifServiceRate', title: '语音自助话务占比' },
 } as const;
 
 /**

@@ -3,13 +3,13 @@ export const INDICATOR_CONFIGS = {
   intelLigentCus: {
     type: 'rate',
     direction: 'higher_better',
-    threshold: 85,
+    threshold: 92,
     name: '智能语音客服占比',
   },
   onlineCustRate: {
     type: 'rate',
     direction: 'higher_better',
-    threshold: 90,
+    threshold: 27,
     name: '在线客服比',
   },
   intelLsoluRate: {
@@ -21,34 +21,18 @@ export const INDICATOR_CONFIGS = {
   seifServiceRate: {
     type: 'rate',
     direction: 'higher_better',
-    threshold: 95,
+    threshold: 80,
     name: '语音自助话务占比',
   },
 
   intelLigentrgRate: {
     type: 'rate',
     direction: 'lower_better',
-    threshold: 5,
+    threshold: 22,
     name: '智能客服转人工率',
   },
 } as const;
 
-// 获取指标的reverseColor配置
-export const getIndicatorReverseColor = (indicatorKey: string): boolean => {
-  const config = INDICATOR_CONFIGS[indicatorKey as keyof typeof INDICATOR_CONFIGS];
-
-  if (!config) {
-    return false; // 默认不反转
-  }
-
-  // 对于率类指标
-  if (config.type === 'rate') {
-    // 越低越好的指标需要反转颜色（下降为好，上升为坏）
-    return config.direction === 'lower_better';
-  }
-
-  return false;
-};
 
 // 新增：获取指标趋势的好坏判断
 export const getIndicatorTrendGoodness = (

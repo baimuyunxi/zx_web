@@ -67,28 +67,6 @@ export const INDICATOR_CONFIGS = {
   },
 } as const;
 
-// 获取指标的reverseColor配置
-export const getIndicatorReverseColor = (indicatorKey: string): boolean => {
-  const config = INDICATOR_CONFIGS[indicatorKey as keyof typeof INDICATOR_CONFIGS];
-
-  if (!config) {
-    return false; // 默认不反转
-  }
-
-  // 对于呼入量类指标，不反转（保持默认行为）
-  if (config.type === 'volume' && config.direction === 'neutral') {
-    return false;
-  }
-
-  // 对于率类指标
-  if (config.type === 'rate') {
-    // 越低越好的指标需要反转颜色（下降为好，上升为坏）
-    return config.direction === 'lower_better';
-  }
-
-  return false;
-};
-
 // 新增：获取指标趋势的好坏判断
 export const getIndicatorTrendGoodness = (
   indicatorKey: string,
