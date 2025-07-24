@@ -50,3 +50,13 @@ export const getSeifServiceRate = async (): Promise<IndicatorResponse> => {
   });
   return response.data;
 };
+
+/**
+ * 10000号总体呼入量
+ */
+export const getArtConn = async (): Promise<IndicatorResponse> => {
+  const response = await httpClient.get('/api/getArtConn', {
+    skipDuplicateCheck: true,
+  });
+  return response.data;
+};

@@ -17,12 +17,14 @@ import { useChartModal01 } from '@/pages/SmartServices/components/Graph/01/utils
 import { createChartRenderer01 } from '@/pages/SmartServices/components/Graph/01/utils/chartCardUtils01';
 import Trend from '../components/Trend';
 import {
+  getArtConn,
   getIntellSoluRate,
   getLigentCus,
   getLigentrgRate,
   getOnlineCustRate,
   getSeifServiceRate,
 } from '@/pages/SmartServices/service';
+import { formatValue } from '@/pages/HumanServices/utils/indicatorDataUtils';
 
 const topColProps = {
   xs: 24,
@@ -99,7 +101,18 @@ const Smart: React.FC = () => {
     loadIndicatorData('onlineCustRate', getOnlineCustRate);
     loadIndicatorData('intelLsoluRate', getIntellSoluRate);
     loadIndicatorData('seifServiceRate', getSeifServiceRate);
+    loadIndicatorData('artConn', getArtConn);
   }, []);
+
+  // 判断是否为呼入量指标（只有呼入量指标才显示月环比）
+  const isVolumeIndicator = (key: string): boolean => {
+    return ['artConn'].includes(key);
+  };
+
+  // 渲染数据同步提示
+  const renderUnsyncedData = (unit: string = '次') => (
+    <StatisticDisplay value={0} unit={unit} monthLabel="数据暂未同步" monthValue="--" />
+  );
 
   // 渲染数据同步提示（百分比类型）
   const renderUnsyncedPercentageData = () => (
@@ -118,6 +131,11 @@ const Smart: React.FC = () => {
           <Trend value="--" indicatorKey={indicatorKey}>
             日环比
           </Trend>
+          {isVolumeIndicator(indicatorKey) && (
+            <Trend value="--" indicatorKey={indicatorKey}>
+              月环比
+            </Trend>
+          )}
         </>
       );
     }
@@ -130,6 +148,14 @@ const Smart: React.FC = () => {
         >
           日环比
         </Trend>
+        {isVolumeIndicator(indicatorKey) && (
+          <Trend
+            value={isPercentage ? formatPP(data.monthRatio) : formatPercentage(data.monthRatio)}
+            indicatorKey={indicatorKey}
+          >
+            月环比
+          </Trend>
+        )}
       </>
     );
   };
@@ -147,6 +173,53 @@ const Smart: React.FC = () => {
       </Divider>
 
       <Row gutter={24}>
+        <Col {...topColProps}>
+          <ChartCard
+            title={
+              <>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <Tag
+                    color={indicatorData.artConn?.dateColor || '#f50'}
+                    bordered={false}
+                    style={{ fontSize: 12, margin: 0 }}
+                  >
+                    {indicatorData.artConn?.dateTag || '暂无数据'}
+                  </Tag>
+                  <span className={styles.titleSpan}>10000号总呼入量</span>
+                </div>
+              </>
+            }
+            action={
+              <Tooltip title="10000/10001号总呼入量">
+                <InfoCircleOutlined />
+              </Tooltip>
+            }
+            total={
+              indicatorData.artConn?.isDataSynced ? (
+                <StatisticDisplay
+                  value={indicatorData.artConn.currentValue}
+                  unit="次"
+                  monthLabel="当月累计"
+                  monthValue={formatValue(indicatorData.artConn.monthValue, '次')}
+                />
+              ) : (
+                renderUnsyncedData()
+              )
+            }
+            footer={renderFooter(
+              indicatorData.artConn || ({} as ProcessedIndicatorData),
+              'artConn',
+            )}
+          >
+            {renderChartWithModal01(
+              'total_volume',
+              '10000号总呼入量',
+              indicatorData.artConn?.chartData,
+              originalData.artConn,
+            )}
+          </ChartCard>
+        </Col>
+
         <Col {...topColProps}>
           <ChartCard
             title={
@@ -287,7 +360,9 @@ const Smart: React.FC = () => {
             )}
           </ChartCard>
         </Col>
+      </Row>
 
+      <Row gutter={24}>
         <Col {...topColProps}>
           <ChartCard
             title={
@@ -334,9 +409,7 @@ const Smart: React.FC = () => {
             )}
           </ChartCard>
         </Col>
-      </Row>
 
-      <Row gutter={24}>
         <Col {...topColProps}>
           <ChartCard
             title={
