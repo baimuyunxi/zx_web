@@ -53,7 +53,7 @@
     "@umijs/route-utils": "^4.0.1",
     "antd": "^5.26.6",
     "antd-style": "^3.7.1",
-    "axios": "^1.10.0",
+    "axios": "^1.11.0",
     "classnames": "^2.5.1",
     "echarts": "^5.6.0",
     "lodash": "^4.17.21",
