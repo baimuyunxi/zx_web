@@ -67,11 +67,11 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
             let result = `${params[0].axisValue}<br/>`;
             params.forEach((param: any) => {
               if (param.seriesName === title) {
-                // 主指标统一使用%
-                result += `${param.marker}${param.seriesName}: ${param.value.toLocaleString()}%<br/>`;
+                // 根据指标类型显示不同单位
+                const unit = title.includes('率') ? '%' : '次';
+                result += `${param.marker}${param.seriesName}: ${param.value.toLocaleString()}${unit}<br/>`;
               } else {
-                // 环比增长率使用pp作为单位
-                result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}pp<br/>`;
+                result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}%<br/>`;
               }
             });
             return result;
@@ -93,11 +93,11 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
             let result = `${params[0].axisValue}<br/>`;
             params.forEach((param: any) => {
               if (param.seriesName === title) {
-                // 主指标统一使用%
-                result += `${param.marker}${param.seriesName}: ${param.value.toLocaleString()}%<br/>`;
+                // 根据指标类型显示不同单位
+                const unit = title.includes('率') ? '%' : '次';
+                result += `${param.marker}${param.seriesName}: ${param.value.toLocaleString()}${unit}<br/>`;
               } else {
-                // 环比增长率使用pp作为单位
-                result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}pp<br/>`;
+                result += `${param.marker}${param.seriesName}: ${param.value >= 0 ? '+' : ''}${param.value.toFixed(2)}%<br/>`;
               }
             });
             return result;
@@ -134,8 +134,12 @@ const ServiceVolumeChart: React.FC<ServiceVolumeChartProps> = ({
           axisLabel: {
             show: !isMini,
             formatter: function (value: number) {
-              // 主指标统一使用%
-              return `${value}%`;
+              // 根据指标类型决定单位
+              if (title.includes('率')) {
+                return `${value}%`;
+              } else {
+                return `${value}次`;
+              }
             },
           },
           axisLine: {
