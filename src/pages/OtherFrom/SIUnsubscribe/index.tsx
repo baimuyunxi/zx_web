@@ -9,14 +9,14 @@ import { getIvrBoard, getIvrTopRank, getIvrTrend } from '@/pages/OtherFrom/SIUns
 
 // 人工数据的默认值
 const trafficDefaultData = {
-  dailyOrders: { value: 0, change: 0, isUp: false },
-  dailyOrdersRate: { value: 0, change: 0, isUp: false },
-  monthlyOrders: { value: 0, change: 0, isUp: false },
-  monthlyOrdersRate: { value: 0, change: 0, isUp: false },
-  dailyUnsubscribe: { value: 0, change: 0, isUp: false },
-  dailyUnsubscribeRate: { value: 0, change: 0, isUp: false },
-  monthlyUnsubscribe: { value: 0, change: 0, isUp: false },
-  monthlyUnsubscribeRate: { value: 0, change: 0, isUp: false },
+  dailyOrders: { value: 0, isUp: false },
+  dailyOrdersRate: { value: 0, isUp: false },
+  monthlyOrders: { value: 0, isUp: false },
+  monthlyOrdersRate: { value: 0, isUp: false },
+  dailyUnsubscribe: { value: 0, isUp: false },
+  dailyUnsubscribeRate: { value: 0, isUp: false },
+  monthlyUnsubscribe: { value: 0, isUp: false },
+  monthlyUnsubscribeRate: { value: 0, isUp: false },
 };
 
 const SalesItems: React.FC = () => {
@@ -103,6 +103,7 @@ const SalesItems: React.FC = () => {
             isUp: unsubscribeData.monGrowthOpinion || false,
           },
         };
+        // @ts-ignore
         setBoardData(transformedData);
       }
     } catch (error) {
@@ -211,6 +212,7 @@ const SalesItems: React.FC = () => {
         </Row>
         <Card variant="borderless">
           <CardIndicatorValue
+            // @ts-ignore
             currentData={currentData}
             loading={activeTab === 'ivr' ? boardLoading : false}
           />

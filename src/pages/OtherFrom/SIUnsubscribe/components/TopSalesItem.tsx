@@ -56,6 +56,7 @@ const TopSalesItem: React.FC<TopSalesItemProps> = ({ dataSource, loading }) => {
           marginBottom: 0,
         },
         pageSize: 5,
+        showSizeChanger: false,
       }}
     />
   );

@@ -7,7 +7,6 @@ const { Title } = Typography;
 // 定义 props 类型
 interface DataItem {
   value: number;
-  change: number;
   isUp: boolean;
 }
 
@@ -31,11 +30,6 @@ const CardIndicatorValue: React.FC<CardIndicatorValueProps> = ({
   currentData,
   loading = false,
 }) => {
-  // 添加防护，确保 currentData 存在
-  if (!currentData && !loading) {
-    return <div>数据加载中...</div>;
-  }
-
   return (
     <Card
       variant="borderless"
