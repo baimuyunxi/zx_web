@@ -47,6 +47,18 @@ export default [
     component: './CustomerTestimonials',
   },
   {
+    path: '/OtherFrom',
+    name: 'otherFrom',
+    icon: 'AreaChartOutlined',
+    routes: [
+      {
+        name: 'unFromSaleItem',
+        component: 'OtherFrom/SIUnsubscribe',
+        path: 'Unsubscribe',
+      },
+    ],
+  },
+  {
     path: '/welcome',
     name: 'welcome',
     icon: 'smile',

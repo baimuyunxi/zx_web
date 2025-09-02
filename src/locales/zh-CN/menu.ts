@@ -4,6 +4,8 @@ export default {
   'menu.SmartServices': '智能服务',
   'menu.OrderProcess': '工单处理',
   'menu.CustomerTestimonials': '客户评价',
+  'menu.otherFrom': '其他',
+  'menu.otherFrom.unFromSaleItem': '退订',
   'menu.more-blocks': '更多区块',
   'menu.home': '首页',
   'menu.admin': '管理页',
