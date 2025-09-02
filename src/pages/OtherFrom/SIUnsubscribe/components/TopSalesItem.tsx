@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table } from 'antd/lib';
 
-const TopSalesItem = () => {
+const TopSalesItem = (dataSource: any) => {
   const columns = [
     {
       title: '排名',
@@ -10,29 +10,29 @@ const TopSalesItem = () => {
     },
     {
       title: '销售品',
-      dataIndex: 'keyword',
-      key: 'keyword',
+      dataIndex: 'srcOfferName',
+      key: 'srcOfferName',
       render: (text: React.ReactNode) => <a href="/">{text}</a>,
     },
     {
       title: '当日',
-      dataIndex: 'keyword',
-      key: 'keyword',
+      dataIndex: 'currentCount',
+      key: 'currentCount',
     },
     {
       title: '日环比',
-      dataIndex: 'keyword',
-      key: 'keyword',
+      dataIndex: 'growthRatePercent',
+      key: 'growthRatePercent',
     },
     {
       title: '当月',
-      dataIndex: 'keyword',
-      key: 'keyword',
+      dataIndex: 'monCurrentCount',
+      key: 'monCurrentCount',
     },
     {
       title: '月环比',
-      dataIndex: 'keyword',
-      key: 'keyword',
+      dataIndex: 'monGrowthRatePercent',
+      key: 'monGrowthRatePercent',
     },
   ];
 
@@ -42,7 +42,7 @@ const TopSalesItem = () => {
       size="small"
       columns={columns}
       // @ts-ignore
-      dataSource={''}
+      dataSource={dataSource}
       pagination={{
         style: {
           marginBottom: 0,

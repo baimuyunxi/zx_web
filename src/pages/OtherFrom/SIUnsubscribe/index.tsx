@@ -5,6 +5,7 @@ import { RobotOutlined, SwapOutlined, UserOutlined } from '@ant-design/icons';
 import TopSalesItem from '@/pages/OtherFrom/SIUnsubscribe/components/TopSalesItem';
 import CardIndicatorValue from '@/pages/OtherFrom/SIUnsubscribe/components/CardIndicatorValue';
 import TrendValue from '@/pages/OtherFrom/SIUnsubscribe/components/TrendValue';
+import { getIvrBoard, getIvrTopRank, getIvrTrend } from '@/pages/OtherFrom/SIUnsubscribe/service';
 // 模拟数据
 const mockData = {
   ivr: {
@@ -37,6 +38,9 @@ const SalesItems: React.FC = () => {
   // 切换到小翼数据
   const handleSwitchToIVR = () => {
     setActiveTab('ivr');
+    getIvrTopRank();
+    getIvrBoard();
+    getIvrTrend();
     message.success('已切换到小翼数据');
   };
 
