@@ -104,15 +104,15 @@ const CardIndicatorValue: React.FC<CardIndicatorValueProps> = ({
                     title="当月订购量"
                     value={currentData?.monthlyOrders?.value || 0}
                     valueStyle={{
-                      color: currentData?.monthlyOrders?.isUp ? '#cf1322' : '#3f8600',
+                      color: currentData?.monthlyOrders?.isUp ? '#3f8600' : '#cf1322',
                       fontSize: '24px',
                       fontWeight: 'bold',
                     }}
                     prefix={
                       currentData?.monthlyOrders?.isUp ? (
-                        <ArrowUpOutlined style={{ color: '#cf1322' }} />
+                        <ArrowUpOutlined style={{ color: '#3f8600' }} />
                       ) : (
-                        <ArrowDownOutlined style={{ color: '#3f8600' }} />
+                        <ArrowDownOutlined style={{ color: '#cf1322' }} />
                       )
                     }
                     suffix="单"
@@ -121,7 +121,7 @@ const CardIndicatorValue: React.FC<CardIndicatorValueProps> = ({
                 <Col md={12} sm={12} xs={24} style={{ textAlign: 'center' }}>
                   <Statistic
                     title="当月订购量环比"
-                    value={Math.abs(currentData?.monthlyOrdersRate?.value || 0)}
+                    value={currentData?.monthlyOrdersRate?.value || 0}
                     precision={1}
                     valueStyle={{
                       color: 'rgba(50,50,50)',
@@ -181,7 +181,7 @@ const CardIndicatorValue: React.FC<CardIndicatorValueProps> = ({
                 <Col md={12} sm={12} xs={24} style={{ textAlign: 'center' }}>
                   <Statistic
                     title="日退订量环比"
-                    value={Math.abs(currentData?.dailyUnsubscribeRate?.value || 0)}
+                    value={currentData?.dailyUnsubscribeRate?.value || 0}
                     precision={1}
                     valueStyle={{
                       color: 'rgba(50,50,50)',
@@ -214,7 +214,7 @@ const CardIndicatorValue: React.FC<CardIndicatorValueProps> = ({
                 <Col md={12} sm={12} xs={24} style={{ textAlign: 'center' }}>
                   <Statistic
                     title="当月退订量环比"
-                    value={Math.abs(currentData?.monthlyUnsubscribeRate?.value || 0)}
+                    value={currentData?.monthlyUnsubscribeRate?.value || 0}
                     precision={1}
                     valueStyle={{
                       color: 'rgba(50,50,50)',
