@@ -176,8 +176,8 @@ const SalesItems: React.FC = () => {
         />
       </FloatButton.Group>
       <span style={{ color: 'red' }}>
-        <strong>*</strong> 数据截止时间: {activeTab === 'ivr' ? maxDay : 'null'} (当前显示:{' '}
-        {activeTab === 'ivr' ? '小翼' : '人工'}数据)
+        <strong>*</strong> 数据截止时间: <strong>{activeTab === 'ivr' ? maxDay : 'null'}</strong>{' '}
+        (当前显示: {activeTab === 'ivr' ? '小翼' : '人工'}数据)
       </span>
       <GridContent>
         <Row gutter={24}>

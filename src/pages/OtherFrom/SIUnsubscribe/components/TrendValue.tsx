@@ -253,7 +253,7 @@ const TrendValue: React.FC<TrendValueProps> = ({ data = [], loading = false }) =
             margin: 0,
           }}
         >
-          图表预留区域
+          图表区域
         </Title>
       </Card>
     );
