@@ -11,19 +11,27 @@ import {
 } from '@/pages/SmartServices/utils/indicatorDataUtils';
 import { useChartModal01 } from '@/pages/SmartServices/components/Graph/01/utils/useChartModal01';
 import { createChartRenderer01 } from '@/pages/SmartServices/components/Graph/01/utils/chartCardUtils01';
-import {
-  getArtConn,
-  getIntellSoluRate,
-  getLigentCus,
-  getLigentrgRate,
-  getOnlineCustRate,
-  getSeifServiceRate,
-} from '@/pages/SmartServices/service';
 import StatisticDisplay from '@/pages/components/StatisticDisplay';
 import Trend from '@/pages/components/Trend';
 import { Col, Divider, Row, Space, Tag, Tooltip } from 'antd';
 import ChartCard from '@/pages/components/Charts/ChartCard';
 import { InfoCircleOutlined } from '@ant-design/icons';
+import {
+  getCommentAfterwards,
+  getCuDianSatRate,
+  getIMInstantRate,
+  getIMSolveRate,
+  getInstSatisfactionRate,
+  getKdOrderSatPre,
+  getRemoteInstantRate,
+  getRemoteSolveRate,
+  getResolutionRate,
+  getTsSatOrderPre,
+  getTsSatSolutionRate,
+  getXianShangSatRate,
+  getYdOrderSatPre,
+  getZiZuSatRate,
+} from '@/pages/CustomerTestimonials/service';
 
 const topColProps = {
   xs: 24,
@@ -95,12 +103,20 @@ const Customer: React.FC = () => {
   // 组件加载时获取数据
   useEffect(() => {
     // 日指标数据加载
-    loadIndicatorData('intelLigentCus', getLigentCus);
-    loadIndicatorData('intelLigentrgRate', getLigentrgRate);
-    loadIndicatorData('onlineCustRate', getOnlineCustRate);
-    loadIndicatorData('intelLsoluRate', getIntellSoluRate);
-    loadIndicatorData('seifServiceRate', getSeifServiceRate);
-    loadIndicatorData('artConn', getArtConn);
+    loadIndicatorData('tssatorderpre', getTsSatOrderPre);
+    loadIndicatorData('tssatsolutionRate', getTsSatSolutionRate);
+    loadIndicatorData('zizusatRate', getZiZuSatRate);
+    loadIndicatorData('cudiansatRate', getCuDianSatRate);
+    loadIndicatorData('instSatisfactionRate', getInstSatisfactionRate);
+    loadIndicatorData('resolutionRate', getResolutionRate);
+    loadIndicatorData('IMInstantRate', getIMInstantRate);
+    loadIndicatorData('IMSolveRate', getIMSolveRate);
+    loadIndicatorData('RemoteInstantRate', getRemoteInstantRate);
+    loadIndicatorData('RemoteSolveRate', getRemoteSolveRate);
+    loadIndicatorData('ydordersatpre', getYdOrderSatPre);
+    loadIndicatorData('kdordersatpre', getKdOrderSatPre);
+    loadIndicatorData('commentAfterwards', getCommentAfterwards);
+    loadIndicatorData('xianshangsatRate', getXianShangSatRate);
   }, []);
 
   // 判断是否为呼入量指标（只有呼入量指标才显示月环比）
